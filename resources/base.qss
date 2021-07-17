@@ -1,34 +1,41 @@
+QWidget{
+    background: white;
+}
+
 QListView {
     outline: none;
 }
 
-#listWidget::item {
+QListWidget{
+    outline: none;
+    border: transparent;
+}
+
+
+QPushButton {
+    color: #242424;
+    background-color: #e8e8e8;
+}
+
+QListWidget::item {
     background-color: #ffffff;
     color: #000000;
     border: transparent;
     border-bottom: 1px solid #dbdbdb;
     padding: 8px;
+
 }
 
-#listWidget::item:hover {
+QListWidget::item:hover {
     background-color: #f5f5f5;
 }
 
-#listWidget::item:selected {
+QListWidget::item:selected {
     border-left: 5px solid #777777;
+    background-color: #f5f5f5;
 }
 
-#listWidget_2::item {
-    background-color: #393d49;
-    color: #ffffff;
-    border: transparent;
-    padding: 8px;
-}
-
-#listWidget_2::item:hover {
-    background-color: #4e5465;
-}
-
-#listWidget_2::item:selected {
-    border-left: 5px solid #009688;
+QStackedWidget{
+    /*border-left: 1px solid #ded6d6;*/
+    border: 1px solid #ded6d6;
 }
