@@ -11,10 +11,22 @@ QListWidget{
     border: transparent;
 }
 
-
 QPushButton {
     color: #242424;
-    background-color: #e8e8e8;
+    background-color: #40f34e;
+    border-radius: 5px;
+    padding: 5px 15px 5px 15px;
+}
+
+QPushButton:hover{
+    background-color: #3ee232;
+}
+QMenu{
+    color: black;
+}
+
+QMenu:focus{
+    color: aliceblue;
 }
 
 QListWidget::item {
