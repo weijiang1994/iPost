@@ -8,8 +8,28 @@
 @Software: PyCharm
 """
 from ui.component.query_params_view import Ui_Form
-from PyQt5.QtWidgets import QWidget, QHeaderView, QTableView, QTableWidgetItem, QCheckBox
+from PyQt5.QtWidgets import QWidget, QHeaderView, QTableView, QTableWidgetItem, QCheckBox, QTableWidget
 from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
+from PyQt5 import QtWidgets
+
+
+class TableWidget(QTableWidget):
+    def __init__(self):
+        super(TableWidget, self).__init__()
+        self.verticalHeader().setVisible(False)
+        self.setColumnCount(4)
+        self.setHorizontalHeaderLabels(['', '键', '值', '描述'])
+        self.setColumnWidth(0, 10)
+        # self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+    def closeEditor(self, editor, hint):
+        if hint == QtWidgets.QAbstractItemDelegate.EditNextItem:
+            current = self.currentIndex()
+            if (current.row() == self.rowCount() - 1 and
+                    current.column() == self.columnCount() - 1):
+                self.insertRow(self.rowCount())
+        super().closeEditor(editor, hint)
 
 
 class BaseTableView(Ui_Form, QWidget):
@@ -17,14 +37,23 @@ class BaseTableView(Ui_Form, QWidget):
         super(BaseTableView, self).__init__()
         self.setupUi(self)
         self.checkBox.clicked.connect(self.set_desc)
-        self.tableWidget.verticalHeader().setVisible(False)
-        self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.verticalLayout.removeWidget(self.tableWidget)
+        self.tableWidget = TableWidget()
+        self.verticalLayout.addWidget(self.tableWidget)
 
     def set_desc(self):
         if self.checkBox.isChecked():
             self.tableWidget.setColumnHidden(2, False)
         else:
             self.tableWidget.setColumnHidden(2, True)
+
+    def closeEditor(self, editor, hint):
+        if hint == QtWidgets.QAbstractItemDelegate.EditNextItem:
+            current = self.currentIndex()
+            if (current.row() == self.rowCount() - 1 and
+                    current.column() == self.columnCount() - 1):
+                self.insertRow(self.rowCount())
+        super().closeEditor(editor, hint)
 
 
 class ParamsTableView(BaseTableView):
