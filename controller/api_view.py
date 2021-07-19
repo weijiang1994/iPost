@@ -11,6 +11,7 @@ from ui.api_view import Ui_Form
 from utils.common import read_qss, basedir, update_btn_stylesheet, BUTTON_NORMAL, BUTTON_SELECTED
 import json
 import requests
+from controller.component.table_view import HeadersTableView, ParamsTableView
 
 
 class ApiView(Ui_Form, QWidget):
@@ -25,6 +26,12 @@ class ApiView(Ui_Form, QWidget):
 
     def init_ui(self):
         update_btn_stylesheet(self.buttons, 0)
+        self.api_stackedWidget.removeWidget(self.page)
+        self.api_stackedWidget.removeWidget(self.page_2)
+        self.api_stackedWidget.addWidget(ParamsTableView())
+        self.api_stackedWidget.addWidget(HeadersTableView())
+        self.api_stackedWidget.addWidget(QWidget())
+        self.api_stackedWidget.addWidget(QWidget())
 
     def init_slot(self):
         self.send_pushButton.clicked.connect(self.send)
@@ -44,12 +51,19 @@ class ApiView(Ui_Form, QWidget):
     def choose_item(self, tag):
         if tag == 'params':
             update_btn_stylesheet(self.buttons, index=0)
+            self.api_stackedWidget.setCurrentIndex(0)
+
         elif tag == 'headers':
             update_btn_stylesheet(self.buttons, index=1)
+            self.api_stackedWidget.setCurrentIndex(1)
+
         elif tag == 'body':
             update_btn_stylesheet(self.buttons, index=2)
+            self.api_stackedWidget.setCurrentIndex(2)
+
         else:
             update_btn_stylesheet(self.buttons, index=3)
+            self.api_stackedWidget.setCurrentIndex(3)
 
 
 if __name__ == '__main__':
