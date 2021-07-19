@@ -8,7 +8,7 @@ file: api_view.py
 """
 from PyQt5.QtWidgets import QWidget
 from ui.api_view import Ui_Form
-from utils.common import read_qss, basedir
+from utils.common import read_qss, basedir, update_btn_stylesheet, BUTTON_NORMAL, BUTTON_SELECTED
 import json
 import requests
 
@@ -20,9 +20,18 @@ class ApiView(Ui_Form, QWidget):
         self.setupUi(self)
         self.setStyleSheet(read_qss(basedir + '/resources/base.qss'))
         self.init_slot()
+        self.buttons = [self.params_pushButton, self.headers_pushButton, self.body_pushButton, self.cookies_pushButton]
+        self.init_ui()
+
+    def init_ui(self):
+        update_btn_stylesheet(self.buttons, 0)
 
     def init_slot(self):
         self.send_pushButton.clicked.connect(self.send)
+        self.params_pushButton.clicked.connect(lambda: self.choose_item('params'))
+        self.headers_pushButton.clicked.connect(lambda: self.choose_item('headers'))
+        self.body_pushButton.clicked.connect(lambda: self.choose_item('body'))
+        self.cookies_pushButton.clicked.connect(lambda: self.choose_item('cookies'))
 
     def send(self):
         api_url = self.api_url_lineEdit.text()
@@ -31,6 +40,16 @@ class ApiView(Ui_Form, QWidget):
         res = requests.get(api_url)
         self.textBrowser.clear()
         self.textBrowser.insertPlainText(json.dumps(res.json(), indent=4, ensure_ascii=False, sort_keys=True))
+
+    def choose_item(self, tag):
+        if tag == 'params':
+            update_btn_stylesheet(self.buttons, index=0)
+        elif tag == 'headers':
+            update_btn_stylesheet(self.buttons, index=1)
+        elif tag == 'body':
+            update_btn_stylesheet(self.buttons, index=2)
+        else:
+            update_btn_stylesheet(self.buttons, index=3)
 
 
 if __name__ == '__main__':
