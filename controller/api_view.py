@@ -9,6 +9,7 @@ file: api_view.py
 from PyQt5.QtWidgets import QWidget
 from ui.api_view import Ui_Form
 from utils.common import read_qss, basedir
+import json
 import requests
 
 
@@ -28,7 +29,8 @@ class ApiView(Ui_Form, QWidget):
         if api_url == '' or api_url is None:
             return
         res = requests.get(api_url)
-        self.textBrowser.setText(res.text)
+        self.textBrowser.clear()
+        self.textBrowser.insertPlainText(json.dumps(res.json(), indent=4, ensure_ascii=False, sort_keys=True))
 
 
 if __name__ == '__main__':
