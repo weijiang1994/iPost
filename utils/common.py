@@ -15,6 +15,7 @@ basedir = os.path.dirname(os.path.dirname(__file__))
 BUTTON_NORMAL = """
     background-color: transparent;
     border-radius: 0;
+    border: none
 """
 
 BUTTON_SELECTED = """

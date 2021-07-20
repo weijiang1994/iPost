@@ -19,7 +19,7 @@ class MainView(Ui_MainWindow, QMainWindow):
         self.setupUi(self)
         self.label.setVisible(False)
         self.gridLayout.addWidget(WorkspaceFrame())
-        self.setStyleSheet(read_qss(basedir + '/resources/base.qss'))
+        self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
 
 
 if __name__ == '__main__':

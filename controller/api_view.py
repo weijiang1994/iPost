@@ -23,7 +23,7 @@ class ApiView(Ui_Form, QWidget):
     def __init__(self):
         super(ApiView, self).__init__()
         self.setupUi(self)
-        self.setStyleSheet(read_qss(basedir + '/resources/base.qss'))
+        self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
         self.init_slot()
         self.buttons = [self.params_pushButton, self.headers_pushButton, self.body_pushButton, self.cookies_pushButton]
         self.init_ui()
