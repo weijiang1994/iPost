@@ -160,3 +160,76 @@ QPushButton[class="ButtonSelected"]{
     border-radius: 0;
     border-bottom: 2px solid #78c6ee;
 }
+
+
+QLineEdit[class='ApiUrl']{
+    background-color: #EDEDED;
+    border: 1px solid #E6E6E6;
+    margin-left: 5px;
+    padding: 2px 0;
+    border-radius: 0;
+    height: 30px;
+}
+
+QLineEdit[class='ApiUrl']:focus{
+    background-color: white;
+}
+
+QPushButton[class='Postman']{
+    background-color: #1B74D5;
+    color: white;
+    margin-left: 5px;
+    height: 25px;
+
+}
+
+QPushButton[class='Postman']:hover{
+    background-color: #0265D2;
+}
+
+QPushButton[class='SmallBtn']{
+    background-color: #EDEDED;
+}
+
+
+QMenuBar {
+	background-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 rgba(207, 209, 207, 255), stop:1 rgba(230, 229, 230, 255));
+}
+
+QMenuBar::item {
+	color: #000000;
+  	spacing: 3px;
+  	padding: 1px 4px;
+	background-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 rgba(207, 209, 207, 255), stop:1 rgba(230, 229, 230, 255));
+}
+
+QMenuBar::item:selected {
+  	background-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 rgba(0, 113, 255, 255), stop:1 rgba(91, 171, 252, 255));
+	color: #FFFFFF;
+}
+QMenu::item:selected {
+	border-style: solid;
+	border-top-color: transparent;
+	border-right-color: transparent;
+	border-left-color: qlineargradient(spread:pad, x1:0.5, y1:1, x2:0.5, y2:0, stop:0 rgba(0, 113, 255, 255), stop:1 rgba(91, 171, 252, 255));
+	border-bottom-color: transparent;
+	border-left-width: 2px;
+	color: #000000;
+	padding-left:15px;
+	padding-top:4px;
+	padding-bottom:4px;
+	padding-right:7px;
+}
+QMenu::item {
+	border-style: solid;
+	border-top-color: transparent;
+	border-right-color: transparent;
+	border-left-color: transparent;
+	border-bottom-color: transparent;
+	border-bottom-width: 1px;
+	color: #000000;
+	padding-left:17px;
+	padding-top:4px;
+	padding-bottom:4px;
+	padding-right:7px;
+}
