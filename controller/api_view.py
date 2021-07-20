@@ -32,6 +32,8 @@ class ApiView(Ui_Form, QWidget):
         self.api_stackedWidget.addWidget(HeadersTableView())
         self.api_stackedWidget.addWidget(QWidget())
         self.api_stackedWidget.addWidget(QWidget())
+        self.send_pushButton.setProperty('class', 'Postman')
+        self.api_url_lineEdit.setProperty('class', 'ApiUrl')
 
     def init_slot(self):
         self.send_pushButton.clicked.connect(self.send)

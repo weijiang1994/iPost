@@ -27,6 +27,7 @@ class WorkspaceFrame(Ui_Form, QWidget):
         self.tabWidget.removeTab(1)
         self.tabWidget.removeTab(0)
         self.tabWidget.setTabsClosable(True)
+        self.new_pushButton.setProperty('class', 'SmallBtn')
 
     def init_slot(self):
         self.new_pushButton.clicked.connect(self.new_request)
