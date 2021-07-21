@@ -6,20 +6,24 @@ file: api_view.py
 @time: 2021/7/18 20:51
 @desc:
 """
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QMessageBox
 from ui.api_view import Ui_Form
 from utils.common import read_qss, basedir, update_btn_stylesheet, BUTTON_NORMAL, BUTTON_SELECTED
 import json
 import requests
 from controller.component.table_view import HeadersTableView, ParamsTableView
+from threading import Thread
+from PyQt5.QtCore import pyqtSignal
+import traceback
 
 
 class ApiView(Ui_Form, QWidget):
+    request_done = pyqtSignal(list)
 
     def __init__(self):
         super(ApiView, self).__init__()
         self.setupUi(self)
-        self.setStyleSheet(read_qss(basedir + '/resources/base.qss'))
+        self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
         self.init_slot()
         self.buttons = [self.params_pushButton, self.headers_pushButton, self.body_pushButton, self.cookies_pushButton]
         self.init_ui()
@@ -41,14 +45,28 @@ class ApiView(Ui_Form, QWidget):
         self.headers_pushButton.clicked.connect(lambda: self.choose_item('headers'))
         self.body_pushButton.clicked.connect(lambda: self.choose_item('body'))
         self.cookies_pushButton.clicked.connect(lambda: self.choose_item('cookies'))
+        self.request_done.connect(self.render_result)
+
+    def render_result(self, list_data):
+        self.textBrowser.clear()
+        self.textBrowser.insertPlainText(list_data[1])
 
     def send(self):
         api_url = self.api_url_lineEdit.text()
         if api_url == '' or api_url is None:
+            QMessageBox.warning(self, '错误', 'URL地址不能为空!')
             return
-        res = requests.get(api_url)
-        self.textBrowser.clear()
-        self.textBrowser.insertPlainText(json.dumps(res.json(), indent=4, ensure_ascii=False, sort_keys=True))
+        th = Thread(target=self.send_request, args=(api_url,))
+        th.setDaemon(True)
+        th.start()
+
+    def send_request(self, api_url):
+        try:
+            res = requests.get(api_url)
+            json_text = json.dumps(res.json(), indent=4, ensure_ascii=False, sort_keys=True)
+            self.request_done.emit([True, json_text])
+        except Exception as e:
+            self.request_done.emit([False, f'获取接口数据出错!\n错误信息:\n{str(traceback.format_exc())}\n接口原始数据：\n{res.text}'])
 
     def choose_item(self, tag):
         if tag == 'params':

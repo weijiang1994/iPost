@@ -23,6 +23,9 @@
        </property>
        <item>
         <widget class="QComboBox" name="comboBox">
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
          <item>
           <property name="text">
            <string>GET</string>
@@ -54,6 +57,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="send_pushButton">
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
          <property name="text">
           <string>Send</string>
          </property>

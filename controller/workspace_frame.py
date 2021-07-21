@@ -17,7 +17,7 @@ class WorkspaceFrame(Ui_Form, QWidget):
     def __init__(self):
         super(WorkspaceFrame, self).__init__()
         self.setupUi(self)
-        self.setStyleSheet(read_qss(basedir + '/resources/base.qss'))
+        self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
         self.init_ui()
         self.init_slot()
 
