@@ -10,7 +10,22 @@
 import os
 from PyQt5.QtGui import QCursor
 from PyQt5.QtCore import Qt
+from configparser import SafeConfigParser
+import threading
+
 basedir = os.path.dirname(os.path.dirname(__file__))
+
+
+class Singleton(object):
+    _instance_lock = threading.Lock()
+
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(Singleton, '_instance'):
+            with Singleton._instance_lock:
+                if not hasattr(Singleton, '_instance'):
+                    Singleton._instance = object.__new__(cls)
+        return Singleton._instance
+
 
 BUTTON_NORMAL = """
     background-color: transparent;
@@ -39,3 +54,7 @@ def update_btn_stylesheet(widgets: list, index=0):
         else:
             widget.setStyleSheet(BUTTON_NORMAL)
         widget.setCursor(QCursor(Qt.PointingHandCursor))
+
+
+def get_conf(path, section):
+    pass
