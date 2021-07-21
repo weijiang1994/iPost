@@ -23,5 +23,8 @@ class MyConfig(Singleton):
     def read_config(self, section, key):
         return self.cfg.get(section, key)
 
+    def reload(self, path):
+        self.cfg.read(path)
+
 
 config = MyConfig(path=basedir + '/resources/conf/base.ini')
