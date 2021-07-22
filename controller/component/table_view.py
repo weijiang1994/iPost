@@ -157,6 +157,11 @@ class HeadersTableView(BaseTableView):
             _row = self.tableWidget.currentRow()
             if _row in self.unselect_row:
                 self.unselect_row.remove(_row)
+            elif len(self.unselect_row):
+                for idx, row in enumerate(self.unselect_row):
+                    if row > _row:
+                        self.unselect_row[idx] = row - 1
+
             self.tableWidget.removeRow(self.tableWidget.currentRow())
 
         elif action == add:

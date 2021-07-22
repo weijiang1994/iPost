@@ -73,7 +73,8 @@ class ApiView(Ui_Form, QWidget):
             json_text = json.dumps(res.json(), indent=4, ensure_ascii=False, sort_keys=True)
             self.request_done.emit([True, json_text])
         except Exception as e:
-            self.request_done.emit([False, f'获取接口数据出错!\n错误信息:\n{str(traceback.format_exc())}\n接口原始数据：\n{res.text}'])
+            self.request_done.emit([False, f'获取接口数据出错!\n错误信息:\n{str(traceback.format_exc())}\n接口原始数据：\n'
+                                           f'{res.text}'])
 
     def choose_item(self, tag):
         if tag == 'params':
