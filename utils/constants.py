@@ -8,6 +8,7 @@
 @Software: PyCharm
 """
 from utils.common import basedir
+import enum
 
 BASE_CONFIG_PATH = basedir + '/resources/conf/base.ini'
 VSS_DARK_THEME_PATH = basedir + '/resources/vss-dark.qss'
@@ -20,3 +21,10 @@ HEADER_ITEMS = ['Accept-Encoding', 'Accept-Charset', 'Accept-Language', 'Access-
 
 TABLE_ITEM_UNSELECT_BGCOLOR = {'vs-dark': '#383939'}
 TABLE_ITEM_SELECT_BGCOLOR = {'vs-dark': '#2D2D30'}
+
+
+class Icon(enum.Enum):
+    ADD_LINE_ICON = basedir + '/resources/images/add-line.png'
+    CHECK_LINE = basedir + '/resources/images/check-line.png'
+    CLOSE_LINE = basedir + '/resources/images/close-line.png'
+    SUBTRACT_LINE = basedir + '/resources/images/subtract-line.png'

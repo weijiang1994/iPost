@@ -8,12 +8,12 @@
 @Software: PyCharm
 """
 from ui.component.query_params_view import Ui_Form
-from utils.constants import HEADER_ITEMS
+from utils.constants import HEADER_ITEMS, Icon
 from PyQt5.QtWidgets import QWidget, QHeaderView, QTableView, QTableWidgetItem, QCheckBox, QTableWidget, QLineEdit, \
     QCompleter, QMenu, QAction
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor, QBrush
+from PyQt5.QtGui import QColor, QBrush, QIcon
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (QApplication, QHeaderView, QStyle, QStyleOptionButton, QTableView)
 from PyQt5.QtCore import (pyqtSignal, Qt, QAbstractTableModel, QModelIndex, QRect, QVariant)
@@ -134,6 +134,10 @@ class HeadersTableView(BaseTableView):
         unselect = QAction('去除参数')
         delete = QAction('删除参数')
         add = QAction('新增参数')
+        select.setIcon(QIcon(Icon.CHECK_LINE.value))
+        unselect.setIcon(QIcon(Icon.CLOSE_LINE.value))
+        delete.setIcon(QIcon(Icon.SUBTRACT_LINE.value))
+        add.setIcon(QIcon(Icon.ADD_LINE_ICON.value))
         for action in [select, unselect, delete, add]:
             menu.addAction(action)
         action = menu.exec_(self.tableWidget.mapToGlobal(pos))
