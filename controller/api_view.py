@@ -23,7 +23,9 @@ class ApiView(Ui_Form, QWidget):
     def __init__(self):
         super(ApiView, self).__init__()
         self.setupUi(self)
-        self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
+        # self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
+        self.params_tw = ParamsTableView()
+        self.headers_tw = HeadersTableView()
         self.init_slot()
         self.buttons = [self.params_pushButton, self.headers_pushButton, self.body_pushButton, self.cookies_pushButton]
         self.init_ui()
@@ -32,8 +34,8 @@ class ApiView(Ui_Form, QWidget):
         update_btn_stylesheet(self.buttons, 0)
         self.api_stackedWidget.removeWidget(self.page)
         self.api_stackedWidget.removeWidget(self.page_2)
-        self.api_stackedWidget.addWidget(ParamsTableView())
-        self.api_stackedWidget.addWidget(HeadersTableView())
+        self.api_stackedWidget.addWidget(self.params_tw)
+        self.api_stackedWidget.addWidget(self.headers_tw)
         self.api_stackedWidget.addWidget(QWidget())
         self.api_stackedWidget.addWidget(QWidget())
         self.send_pushButton.setProperty('class', 'Postman')
@@ -56,17 +58,32 @@ class ApiView(Ui_Form, QWidget):
         if api_url == '' or api_url is None:
             QMessageBox.warning(self, '错误', 'URL地址不能为空!')
             return
-        th = Thread(target=self.send_request, args=(api_url,))
+        header_data = {}
+        method = self.comboBox.currentText()
+        for row in range(self.headers_tw.tableWidget.rowCount()):
+            if row not in self.headers_tw.unselect_row:
+                header_data[self.headers_tw.tableWidget.cellWidget(row, 0).text()] = \
+                    self.headers_tw.tableWidget.item(row, 1).text()
+        th = Thread(target=self.send_request, args=(api_url, method, header_data))
         th.setDaemon(True)
         th.start()
 
-    def send_request(self, api_url):
+    def send_request(self, api_url, method='GET', headers=None):
         try:
-            res = requests.get(api_url)
+            if method == 'GET':
+                res = requests.get(api_url, headers=headers if headers else {})
+            if method == 'POST':
+                res = requests.post(api_url, headers=headers if headers else {})
+            if method == 'PUT':
+                res = requests.post(api_url, headers=headers if headers else {})
+            if method == 'DELETE':
+                res = requests.delete(api_url, headers=headers if headers else {})
+
             json_text = json.dumps(res.json(), indent=4, ensure_ascii=False, sort_keys=True)
             self.request_done.emit([True, json_text])
         except Exception as e:
-            self.request_done.emit([False, f'获取接口数据出错!\n错误信息:\n{str(traceback.format_exc())}\n接口原始数据：\n{res.text}'])
+            self.request_done.emit([False, f'获取接口数据出错!\n错误信息:\n{str(traceback.format_exc())}\n接口原始数据：\n'
+                                           f'{res.text}'])
 
     def choose_item(self, tag):
         if tag == 'params':

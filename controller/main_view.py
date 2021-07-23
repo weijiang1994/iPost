@@ -19,15 +19,16 @@ class MainView(Ui_MainWindow, QMainWindow):
         self.setupUi(self)
         self.label.setVisible(False)
         self.gridLayout.addWidget(WorkspaceFrame())
-        self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
+        # self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
 
 
 if __name__ == '__main__':
     import sys
     from PyQt5.QtWidgets import QApplication
-
+    from qt_material import apply_stylesheet
     app = QApplication(sys.argv)
     win = MainView()
+    apply_stylesheet(app, 'light_blue.xml')
     win.setWindowTitle('iPost Version 1.0.14 Beta')
     win.show()
     app.exec_()

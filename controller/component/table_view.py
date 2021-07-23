@@ -8,12 +8,19 @@
 @Software: PyCharm
 """
 from ui.component.query_params_view import Ui_Form
-from PyQt5.QtWidgets import QWidget, QHeaderView, QTableView, QTableWidgetItem, QCheckBox, QTableWidget
-from PyQt5 import QtCore
+from utils.constants import HEADER_ITEMS, Icon
+from PyQt5.QtWidgets import QWidget, QHeaderView, QTableView, QTableWidgetItem, QCheckBox, QTableWidget, QLineEdit, \
+    QCompleter, QMenu, QAction
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor, QBrush, QIcon
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (QApplication, QHeaderView, QStyle, QStyleOptionButton, QTableView)
 from PyQt5.QtCore import (pyqtSignal, Qt, QAbstractTableModel, QModelIndex, QRect, QVariant)
+
+completer = QCompleter(HEADER_ITEMS)
+completer.setFilterMode(Qt.MatchContains)
+completer.setCompletionMode(QCompleter.PopupCompletion)
 
 
 class CheckBoxHeader(QHeaderView):
@@ -63,18 +70,21 @@ class TableWidget(QTableWidget):
     def __init__(self):
         super(TableWidget, self).__init__()
         self.verticalHeader().setVisible(False)
-        self.setColumnCount(4)
-        self.setHorizontalHeader(CheckBoxHeader())
-        self.setHorizontalHeaderLabels(['', '键', '值', '描述'])
+        self.setColumnCount(3)
+        self.setHorizontalHeaderLabels(['键', '值', '描述'])
         self.setColumnWidth(0, 10)
+        self.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.AnyKeyPressed)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
     def closeEditor(self, editor, hint):
         if hint == QtWidgets.QAbstractItemDelegate.EditNextItem:
             current = self.currentIndex()
-            if (current.row() == self.rowCount() - 1 and
-                    current.column() == self.columnCount() - 1):
+            if current.row() == self.rowCount() - 1 and current.column() == self.columnCount() - 1:
                 self.insertRow(self.rowCount())
+                qle = QLineEdit('')
+                qle.setStyleSheet('border: none')
+                qle.setCompleter(completer)
+                self.setCellWidget(self.rowCount() - 1, 0, qle)
         super().closeEditor(editor, hint)
 
 
@@ -93,14 +103,6 @@ class BaseTableView(Ui_Form, QWidget):
         else:
             self.tableWidget.setColumnHidden(2, True)
 
-    def closeEditor(self, editor, hint):
-        if hint == QtWidgets.QAbstractItemDelegate.EditNextItem:
-            current = self.currentIndex()
-            if (current.row() == self.rowCount() - 1 and
-                    current.column() == self.columnCount() - 1):
-                self.insertRow(self.rowCount())
-        super().closeEditor(editor, hint)
-
 
 class ParamsTableView(BaseTableView):
     def __init__(self):
@@ -116,15 +118,90 @@ class HeadersTableView(BaseTableView):
                         ['Accept', '*/*', ''],
                         ['Accept-Encoding', 'gzip, deflate, br', ''],
                         ['Connection', 'keep alive', '']]
+        self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tableWidget.customContextMenuRequested.connect(self.right_btn_menu)
+        self.unselect_row = []
         self.init_data()
+
+    def right_btn_menu(self, pos):
+        row_num = -1
+        for i in self.tableWidget.selectionModel().selection().indexes():
+            row_num = i.row()
+        if row_num == -1:
+            return
+        menu = QMenu()
+        select = QAction('选择参数')
+        unselect = QAction('去除参数')
+        delete = QAction('删除参数')
+        add = QAction('新增参数')
+        select.setIcon(QIcon(Icon.CHECK_LINE.value))
+        unselect.setIcon(QIcon(Icon.CLOSE_LINE.value))
+        delete.setIcon(QIcon(Icon.SUBTRACT_LINE.value))
+        add.setIcon(QIcon(Icon.ADD_LINE_ICON.value))
+        for action in [select, unselect, delete, add]:
+            menu.addAction(action)
+        action = menu.exec_(self.tableWidget.mapToGlobal(pos))
+        if action == select:
+            _row = self.tableWidget.currentRow()
+            if _row not in self.unselect_row:
+                return
+            else:
+                self.unselect_row.remove(_row)
+                self.update_item_bg(_row, bg_color='#2D2D30')
+
+        elif action == unselect:
+            _row = self.tableWidget.currentRow()
+            if _row not in self.unselect_row:
+                self.unselect_row.append(_row)
+                self.update_item_bg(_row, bg_color='#383939')
+            else:
+                return
+
+        elif action == delete:
+            _row = self.tableWidget.currentRow()
+            if _row in self.unselect_row:
+                self.unselect_row.remove(_row)
+            elif len(self.unselect_row):
+                for idx, row in enumerate(self.unselect_row):
+                    if row > _row:
+                        self.unselect_row[idx] = row - 1
+
+            self.tableWidget.removeRow(self.tableWidget.currentRow())
+
+        elif action == add:
+            self.tableWidget.insertRow(self.tableWidget.rowCount())
+            qle = QLineEdit('')
+            qle.setStyleSheet('border: none')
+            qle.setCompleter(completer)
+            self.tableWidget.setCellWidget(self.tableWidget.rowCount() - 1, 0, qle)
+
+    def update_item_bg(self, _row, bg_color):
+        for col in range(self.tableWidget.columnCount()):
+            item = self.tableWidget.item(_row, col) or self.tableWidget.cellWidget(_row, col)
+            if type(item) is QTableWidgetItem:
+                item.setBackground(QBrush(QColor(bg_color)))
+            if type(item) is QLineEdit:
+                item.setStyleSheet(f'background-color: {bg_color};border:none')
 
     def init_data(self):
         for i in range(len(self.headers)):
             self.tableWidget.insertRow(self.tableWidget.rowCount())
             item = self.headers[i]
             for j in range(len(item)):
-                item = QTableWidgetItem(str(self.headers[i][j]))
                 if j == 0:
-                    item.setFlags(QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled)
-                    item.setCheckState(QtCore.Qt.CheckState.Checked)
-                self.tableWidget.setItem(i, j, item)
+                    qle = QLineEdit(str(self.headers[i][j]))
+                    qle.setStyleSheet('border: none')
+                    qle.setCompleter(completer)
+                    self.tableWidget.setCellWidget(i, j, qle)
+                else:
+                    item = QTableWidgetItem(str(self.headers[i][j]))
+                    self.tableWidget.setItem(i, j, item)
+
+
+if __name__ == '__main__':
+    import sys
+
+    app = QApplication(sys.argv)
+    win = HeadersTableView()
+    win.show()
+    sys.exit(app.exec_())
