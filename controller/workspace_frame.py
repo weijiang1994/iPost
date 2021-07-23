@@ -19,7 +19,7 @@ class WorkspaceFrame(Ui_Form, QWidget):
     def __init__(self):
         super(WorkspaceFrame, self).__init__()
         self.setupUi(self)
-        self.setStyleSheet(read_qss(VSS_DARK_THEME_PATH))
+        # self.setStyleSheet(read_qss(VSS_DARK_THEME_PATH))
         self.init_ui()
         self.init_slot()
         self.config = MyConfig(path=BASE_CONFIG_PATH)

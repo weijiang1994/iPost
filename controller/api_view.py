@@ -23,7 +23,7 @@ class ApiView(Ui_Form, QWidget):
     def __init__(self):
         super(ApiView, self).__init__()
         self.setupUi(self)
-        self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
+        # self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
         self.params_tw = ParamsTableView()
         self.headers_tw = HeadersTableView()
         self.init_slot()
@@ -59,17 +59,26 @@ class ApiView(Ui_Form, QWidget):
             QMessageBox.warning(self, '错误', 'URL地址不能为空!')
             return
         header_data = {}
+        method = self.comboBox.currentText()
         for row in range(self.headers_tw.tableWidget.rowCount()):
             if row not in self.headers_tw.unselect_row:
                 header_data[self.headers_tw.tableWidget.cellWidget(row, 0).text()] = \
                     self.headers_tw.tableWidget.item(row, 1).text()
-        th = Thread(target=self.send_request, args=(api_url, header_data))
+        th = Thread(target=self.send_request, args=(api_url, method, header_data))
         th.setDaemon(True)
         th.start()
 
-    def send_request(self, api_url, headers=None):
+    def send_request(self, api_url, method='GET', headers=None):
         try:
-            res = requests.get(api_url, headers=headers if headers else {})
+            if method == 'GET':
+                res = requests.get(api_url, headers=headers if headers else {})
+            if method == 'POST':
+                res = requests.post(api_url, headers=headers if headers else {})
+            if method == 'PUT':
+                res = requests.post(api_url, headers=headers if headers else {})
+            if method == 'DELETE':
+                res = requests.delete(api_url, headers=headers if headers else {})
+
             json_text = json.dumps(res.json(), indent=4, ensure_ascii=False, sort_keys=True)
             self.request_done.emit([True, json_text])
         except Exception as e:
