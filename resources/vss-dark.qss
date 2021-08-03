@@ -4,6 +4,13 @@
 * QSS Theme: Visual Studio(R) 2012 Dark Theme.
 * License: WTFPL
 */
+QTabBar::tab {
+  color: #ffffff;
+  border: 0px;
+}
+QTabBar::close-button{
+  image:url('../resources/images/tab_close.svg');
+}
 QListView {
   background-color:#252526;
   border-style:none;
@@ -236,4 +243,5 @@ QTreeView::item:selected!active {
 QTreeView::item:selected {
   background: #3f3f46;
 }
+
 

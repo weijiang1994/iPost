@@ -12,6 +12,7 @@ from utils.common import read_qss, basedir, update_btn_stylesheet, BUTTON_NORMAL
 import json
 import requests
 from controller.component.table_view import HeadersTableView, ParamsTableView
+from controller.component.json_editor import JSONEditor
 from threading import Thread
 from PyQt5.QtCore import pyqtSignal
 import traceback
@@ -26,6 +27,7 @@ class ApiView(Ui_Form, QWidget):
         # self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
         self.params_tw = ParamsTableView()
         self.headers_tw = HeadersTableView()
+        self.editor = JSONEditor()
         self.init_slot()
         self.buttons = [self.params_pushButton, self.headers_pushButton, self.body_pushButton, self.cookies_pushButton]
         self.init_ui()
@@ -40,6 +42,11 @@ class ApiView(Ui_Form, QWidget):
         self.api_stackedWidget.addWidget(QWidget())
         self.send_pushButton.setProperty('class', 'Postman')
         self.api_url_lineEdit.setProperty('class', 'ApiUrl')
+        self.textBrowser.setVisible(False)
+        self.verticalLayout_2.addWidget(self.editor)
+        self.verticalLayout_2.addWidget(self.textBrowser)
+        self.verticalLayout_2.setStretch(1, 2)
+        self.verticalLayout_2.setStretch(2, 4)
 
     def init_slot(self):
         self.send_pushButton.clicked.connect(self.send)
@@ -50,8 +57,10 @@ class ApiView(Ui_Form, QWidget):
         self.request_done.connect(self.render_result)
 
     def render_result(self, list_data):
-        self.textBrowser.clear()
-        self.textBrowser.insertPlainText(list_data[1])
+        # self.textBrowser.clear()
+        # self.textBrowser.insertPlainText(list_data[1])
+        self.editor.clear()
+        self.editor.setText(list_data[1])
 
     def send(self):
         api_url = self.api_url_lineEdit.text()
@@ -71,7 +80,7 @@ class ApiView(Ui_Form, QWidget):
     def send_request(self, api_url, method='GET', headers=None):
         try:
             if method == 'GET':
-                res = requests.get(api_url, headers=headers if headers else {})
+                res = requests.get(api_url, headers=headers)
             if method == 'POST':
                 res = requests.post(api_url, headers=headers if headers else {})
             if method == 'PUT':
@@ -97,7 +106,6 @@ class ApiView(Ui_Form, QWidget):
         elif tag == 'body':
             update_btn_stylesheet(self.buttons, index=2)
             self.api_stackedWidget.setCurrentIndex(2)
-
         else:
             update_btn_stylesheet(self.buttons, index=3)
             self.api_stackedWidget.setCurrentIndex(3)
