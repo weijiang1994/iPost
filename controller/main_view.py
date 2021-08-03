@@ -11,6 +11,8 @@ from PyQt5.QtWidgets import QMainWindow
 from ui.main_window import Ui_MainWindow
 from controller.workspace_frame import WorkspaceFrame
 from utils.common import read_qss, basedir
+from utils.constants import VSS_DARK_THEME_PATH
+import resources
 
 
 class MainView(Ui_MainWindow, QMainWindow):
@@ -28,7 +30,8 @@ if __name__ == '__main__':
     from qt_material import apply_stylesheet
     app = QApplication(sys.argv)
     win = MainView()
-    apply_stylesheet(app, 'light_blue.xml')
+    # apply_stylesheet(app, 'dark_teal.xml')
+    win.setStyleSheet(read_qss(VSS_DARK_THEME_PATH))
     win.setWindowTitle('iPost Version 1.0.14 Beta')
     win.show()
     app.exec_()
