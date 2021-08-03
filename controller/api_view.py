@@ -47,7 +47,6 @@ class ApiView(Ui_Form, QWidget):
         self.verticalLayout_2.addWidget(self.textBrowser)
         self.verticalLayout_2.setStretch(1, 2)
         self.verticalLayout_2.setStretch(2, 4)
-        self.gridLayout.addLayout(self.verticalLayout_2, 0, 0, 1, 1)
 
     def init_slot(self):
         self.send_pushButton.clicked.connect(self.send)
@@ -80,9 +79,8 @@ class ApiView(Ui_Form, QWidget):
 
     def send_request(self, api_url, method='GET', headers=None):
         try:
-            print(headers)
             if method == 'GET':
-                res = requests.get(api_url)
+                res = requests.get(api_url, headers=headers)
             if method == 'POST':
                 res = requests.post(api_url, headers=headers if headers else {})
             if method == 'PUT':
