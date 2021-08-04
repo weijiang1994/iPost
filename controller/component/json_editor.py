@@ -21,7 +21,7 @@ class JSONEditor(QsciScintilla):
         self.setWrapVisualFlags(QsciScintilla.WrapFlagNone)
         self.setTabWidth(4)
         self.setIndentationGuides(True)
-        self.setIndentationGuidesBackgroundColor(QColor('eeb12d'))
+        self.setIndentationGuidesBackgroundColor(QColor())
         self.setAutoIndent(True)
         self.setCaretForegroundColor(QColor('#eeb12d'))
         self.setCaretLineVisible(True)
@@ -33,6 +33,8 @@ class JSONEditor(QsciScintilla):
         self.setMarginWidth(0, '000000')
         self.setMarginsForegroundColor(QColor("#ff888888"))
         self.setMarginsBackgroundColor(QColor('#ff2D2D30'))
+
+        # set folding through the indentation
         self.setFolding(QsciScintilla.BoxedTreeFoldStyle)
         self.setFoldMarginColors(QColor('#ff2D2D30'), QColor('#ff2D2D30'))
 
@@ -40,7 +42,6 @@ class JSONEditor(QsciScintilla):
         self.lexer = QsciLexerJSON(self)
         self.lexer.setFont(self.font)
         self.setLexer(self.lexer)
-        self.setStyleSheet(read_qss(VSS_DARK_THEME_PATH))
         self.lexer.setDefaultPaper(QColor('#2D2D30'))
         self.lexer.setPaper(QColor('#2D2D30'))
 
