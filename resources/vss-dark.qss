@@ -8,9 +8,76 @@ QTabBar::tab {
   color: #ffffff;
   border: 0px;
 }
+
 QTabBar::close-button{
-  image:url('../resources/images/tab_close.svg');
+  image:url('../resources/images/close-default.png');
+  /*image:url('../resources/images/tab_close.svg');*/
 }
+
+QTabBar::close-button:hover{
+  image:url('../resources/images/close-line.svg');
+}
+
+/*  ------------------------------------------------------------------------  */
+/*  QHeaderView  */
+
+QHeaderView::section {
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  background-color: #232629;
+  padding: 0 20px;
+  height: 35px;
+  border-radius: 0px;
+
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+  border-color: #31363b;
+}
+
+QHeaderView {
+  border: none;
+}
+
+/*  ------------------------------------------------------------------------  */
+/*  QScrollBar  */
+
+QScrollBar:horizontal {
+  border: 0;
+  background: #232629;
+  height: 8px;
+}
+
+QScrollBar:vertical {
+  border: 0;
+  background: #232629;
+  width: 8px;
+}
+
+QScrollBar::handle:horizontal {
+  background: #4f5b62;
+  min-width: 20px;
+}
+
+QScrollBar::handle:vertical {
+  background: #4f5b62;
+  min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover,
+QScrollBar::handle:horizontal:hover {
+  background: #1de9b6;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical,
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+  border: 0;
+  background: transparent;
+  width: 0px;
+  height: 0px;
+}
+
 QListView {
   background-color:#252526;
   border-style:none;
