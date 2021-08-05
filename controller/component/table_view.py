@@ -113,8 +113,7 @@ class HeadersTableView(BaseTableView):
     def __init__(self):
         super(HeadersTableView, self).__init__()
         self.label.setText('请求头')
-        self.headers = [['Host', 'localhost', '请求主机'],
-                        ['User-Agent', 'iPost Runtime v1.0.23', ''],
+        self.headers = [['User-Agent', 'iPost Runtime v1.0.23', ''],
                         ['Accept', '*/*', ''],
                         ['Accept-Encoding', 'gzip, deflate, br', ''],
                         ['Connection', 'keep alive', '']]
