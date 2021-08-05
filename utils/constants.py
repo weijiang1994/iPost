@@ -28,3 +28,8 @@ class Icon(enum.Enum):
     CHECK_LINE = basedir + '/resources/images/check-line.png'
     CLOSE_LINE = basedir + '/resources/images/close-line.png'
     SUBTRACT_LINE = basedir + '/resources/images/subtract-line.png'
+    SAVE = basedir + '/resources/images/save.png'
+    ALIGN_RIGHT = basedir + '/resources/images/align-right.png'
+    ALIGN_LEFT = basedir + '/resources/images/align-left.png'
+    ALIGN_CENTER = basedir + '/resources/images/align-center.png'
+    LOCATION = basedir + '/resources/images/location.png'
