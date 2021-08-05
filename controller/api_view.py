@@ -57,10 +57,10 @@ class ApiView(Ui_Form, QWidget):
         self.request_done.connect(self.render_result)
 
     def render_result(self, list_data):
-        # self.textBrowser.clear()
-        # self.textBrowser.insertPlainText(list_data[1])
         self.editor.clear()
         self.editor.setText(list_data[1])
+        self.send_pushButton.setText('Send')
+        self.send_pushButton.setEnabled(True)
 
     def send(self):
         api_url = self.api_url_lineEdit.text()
@@ -73,12 +73,15 @@ class ApiView(Ui_Form, QWidget):
             if row not in self.headers_tw.unselect_row:
                 header_data[self.headers_tw.tableWidget.cellWidget(row, 0).text()] = \
                     self.headers_tw.tableWidget.item(row, 1).text()
+        self.send_pushButton.setText('Sending')
+        self.send_pushButton.setEnabled(False)
         th = Thread(target=self.send_request, args=(api_url, method, header_data))
         th.setDaemon(True)
         th.start()
 
     def send_request(self, api_url, method='GET', headers=None):
         try:
+            res = None
             if method == 'GET':
                 res = requests.get(api_url, headers=headers)
             if method == 'POST':
@@ -87,12 +90,14 @@ class ApiView(Ui_Form, QWidget):
                 res = requests.post(api_url, headers=headers if headers else {})
             if method == 'DELETE':
                 res = requests.delete(api_url, headers=headers if headers else {})
-
             json_text = json.dumps(res.json(), indent=4, ensure_ascii=False, sort_keys=True)
             self.request_done.emit([True, json_text])
         except Exception as e:
-            self.request_done.emit([False, f'获取接口数据出错!\n错误信息:\n{str(traceback.format_exc())}\n接口原始数据：\n'
-                                           f'{res.text}'])
+            if res:
+                self.request_done.emit([False, f'获取接口数据出错!\n错误信息:\n{str(traceback.format_exc())}\n接口原始数据：\n'
+                                               f'{res.text}'])
+            else:
+                self.request_done.emit([False, f'获取接口数据出错!\n错误信息:\n{str(traceback.format_exc())}'])
 
     def choose_item(self, tag):
         if tag == 'params':
