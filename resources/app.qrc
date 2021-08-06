@@ -1,0 +1,7 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="icon">
+        <file alias="tab_close.svg">images/tab_close.svg</file>
+    </qresource>
+</RCC>
+
