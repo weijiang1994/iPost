@@ -39,6 +39,8 @@ class WorkspaceFrame(Ui_Form, QWidget):
         if self.tabWidget.count() <= 0:
             return
         menu = QMenu()
+        menu.setStyleSheet(read_qss(VSS_DARK_THEME_PATH))
+        menu.setProperty('class', 'sub-menu')
         close_cur = QAction('关闭当前选项')
         close_right = QAction('关闭右侧选项')
         close_left = QAction('关闭左侧选项')
