@@ -8,7 +8,8 @@
 @Software: PyCharm
 """
 from ui.component.query_params_view import Ui_Form
-from utils.constants import HEADER_ITEMS, Icon
+from utils.constants import HEADER_ITEMS, Icon, VSS_DARK_THEME_PATH
+from utils.common import read_qss
 from PyQt5.QtWidgets import QWidget, QHeaderView, QTableView, QTableWidgetItem, QCheckBox, QTableWidget, QLineEdit, \
     QCompleter, QMenu, QAction
 from PyQt5 import QtCore, QtGui
@@ -129,6 +130,8 @@ class HeadersTableView(BaseTableView):
         if row_num == -1:
             return
         menu = QMenu()
+        menu.setStyleSheet(read_qss(VSS_DARK_THEME_PATH))
+        menu.setProperty('class', 'sub-menu')
         select = QAction('选择参数')
         unselect = QAction('去除参数')
         delete = QAction('删除参数')
