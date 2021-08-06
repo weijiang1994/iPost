@@ -7,6 +7,7 @@ file: api_view.py
 @desc:
 """
 from PyQt5.QtWidgets import QWidget, QMessageBox
+from PyQt5.QtGui import QCursor, QMouseEvent
 from ui.api_view import Ui_Form
 from utils.common import read_qss, basedir, update_btn_stylesheet, BUTTON_NORMAL, BUTTON_SELECTED
 import json
@@ -14,7 +15,7 @@ import requests
 from controller.component.table_view import HeadersTableView, ParamsTableView
 from controller.component.json_editor import JSONEditor
 from threading import Thread
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QEvent
 import traceback
 
 
@@ -24,10 +25,11 @@ class ApiView(Ui_Form, QWidget):
     def __init__(self):
         super(ApiView, self).__init__()
         self.setupUi(self)
-        # self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
         self.params_tw = ParamsTableView()
         self.headers_tw = HeadersTableView()
         self.editor = JSONEditor()
+        self.x_position = 0
+        self.y_position = 0
         self.init_slot()
         self.buttons = [self.params_pushButton, self.headers_pushButton, self.body_pushButton, self.cookies_pushButton]
         self.init_ui()
@@ -47,6 +49,7 @@ class ApiView(Ui_Form, QWidget):
         self.verticalLayout_2.addWidget(self.textBrowser)
         self.verticalLayout_2.setStretch(1, 2)
         self.verticalLayout_2.setStretch(2, 4)
+        self.size_label.installEventFilter(self)
 
     def init_slot(self):
         self.send_pushButton.clicked.connect(self.send)
@@ -114,6 +117,25 @@ class ApiView(Ui_Form, QWidget):
         else:
             update_btn_stylesheet(self.buttons, index=3)
             self.api_stackedWidget.setCurrentIndex(3)
+
+    def eventFilter(self, object, event):
+        if event.type() == QEvent.Enter:
+            x = self.size_label.geometry().x()
+            y = self.size_label.geometry().y()
+            height = self.size_label.geometry().height()
+            print(x, y, height)
+            self.stop = True
+            self.w = QWidget()
+            self.w.setGeometry(x+300, y+height*5, 300, 40)
+            self.w.show()
+            return True
+        elif event.type() == QEvent.Leave:
+            self.stop = False
+            self.w.close()
+        return False
+
+    def mouseMoveEvent(self, a0: QMouseEvent) -> None:
+        print('mouse')
 
 
 if __name__ == '__main__':
