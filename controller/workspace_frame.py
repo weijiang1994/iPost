@@ -36,6 +36,8 @@ class WorkspaceFrame(Ui_Form, QWidget):
         self.tabWidget.customContextMenuRequested.connect(self.tab_menu)
 
     def tab_menu(self, pos):
+        if self.tabWidget.count() <= 0:
+            return
         menu = QMenu()
         close_cur = QAction('关闭当前选项')
         close_right = QAction('关闭右侧选项')
