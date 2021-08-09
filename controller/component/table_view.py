@@ -157,6 +157,36 @@ class HeadersTableView(BaseTableView):
                     self.tableWidget.setItem(i, j, item)
 
 
+class ResponseTable(QTableWidget):
+    def __init__(self, headers=None):
+        super(ResponseTable, self).__init__()
+        self.set_headers(headers)
+        self.verticalHeader().setVisible(False)
+        self.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+    def set_headers(self, headers=None):
+        if headers is None:
+            headers = ['Key', 'Value']
+        self.setColumnCount(len(headers))
+        self.setHorizontalHeaderLabels(headers)
+
+    def render_data(self, datas):
+        for key in datas:
+            self.insertRow(self.rowCount())
+            k_item = QTableWidgetItem(key)
+            v_item = QTableWidgetItem(datas.get(key))
+            self.setItem(self.rowCount() - 1, 0, k_item)
+            self.setItem(self.rowCount() - 1, 1, v_item)
+
+    def render_cookies(self, cookies):
+        for r_index, cookie in enumerate(cookies):
+            self.insertRow(self.rowCount())
+            for c_index, c in enumerate(cookie):
+                item = QTableWidgetItem(str(c))
+                self.setItem(r_index, c_index, item)
+
+
 if __name__ == '__main__':
     import sys
 
