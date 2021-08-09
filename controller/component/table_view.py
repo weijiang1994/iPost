@@ -24,49 +24,6 @@ completer.setFilterMode(Qt.MatchContains)
 completer.setCompletionMode(QCompleter.PopupCompletion)
 
 
-class CheckBoxHeader(QHeaderView):
-    clicked = pyqtSignal(bool)
-
-    _x_offset = 3
-    _y_offset = 0
-    _width = 20
-    _height = 20
-
-    def __init__(self, orientation=Qt.Horizontal, parent=None):
-        super(CheckBoxHeader, self).__init__(orientation, parent)
-        self.isOn = False
-
-    def paintSection(self, painter, rect, logicalIndex):
-        painter.save()
-        super(CheckBoxHeader, self).paintSection(painter, rect, logicalIndex)
-        painter.restore()
-
-        self._y_offset = int((rect.height() - self._width) / 2.)
-
-        if logicalIndex == 0:
-            option = QStyleOptionButton()
-            option.rect = QRect(rect.x() + self._x_offset, rect.y() + self._y_offset, self._width, self._height)
-            option.state = QStyle.State_Enabled | QStyle.State_Active
-            if self.isOn:
-                option.state |= QStyle.State_On
-            else:
-                option.state |= QStyle.State_Off
-            self.style().drawControl(QStyle.CE_CheckBox, option, painter)
-
-    def mousePressEvent(self, event):
-        index = self.logicalIndexAt(event.pos())
-        if 0 == index:
-            x = self.sectionPosition(index)
-            if x + self._x_offset < event.pos().x() < x + self._x_offset + self._width and self._y_offset < event.pos().y() < self._y_offset + self._height:
-                if self.isOn:
-                    self.isOn = False
-                else:
-                    self.isOn = True
-                self.clicked.emit(self.isOn)
-                self.update()
-        super(CheckBoxHeader, self).mousePressEvent(event)
-
-
 class TableWidget(QTableWidget):
     def __init__(self):
         super(TableWidget, self).__init__()
@@ -198,6 +155,36 @@ class HeadersTableView(BaseTableView):
                 else:
                     item = QTableWidgetItem(str(self.headers[i][j]))
                     self.tableWidget.setItem(i, j, item)
+
+
+class ResponseTable(QTableWidget):
+    def __init__(self, headers=None):
+        super(ResponseTable, self).__init__()
+        self.set_headers(headers)
+        self.verticalHeader().setVisible(False)
+        self.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+    def set_headers(self, headers=None):
+        if headers is None:
+            headers = ['Key', 'Value']
+        self.setColumnCount(len(headers))
+        self.setHorizontalHeaderLabels(headers)
+
+    def render_data(self, datas):
+        for key in datas:
+            self.insertRow(self.rowCount())
+            k_item = QTableWidgetItem(key)
+            v_item = QTableWidgetItem(datas.get(key))
+            self.setItem(self.rowCount() - 1, 0, k_item)
+            self.setItem(self.rowCount() - 1, 1, v_item)
+
+    def render_cookies(self, cookies):
+        for r_index, cookie in enumerate(cookies):
+            self.insertRow(self.rowCount())
+            for c_index, c in enumerate(cookie):
+                item = QTableWidgetItem(str(c))
+                self.setItem(r_index, c_index, item)
 
 
 if __name__ == '__main__':

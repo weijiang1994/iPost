@@ -1,3 +1,9 @@
+QToolTip{
+    background-color: #363636;
+    color: white;
+    border: none;
+}
+
 QMenuBar {
     background-color: #232629;
     color: #ffffff;
