@@ -1,3 +1,11 @@
+QWidget,
+QMenuBar,
+QMenu
+{
+    font-family: Consolas, "Microsoft YaHei UI", sans-serif;
+    font-size: 14px;
+}
+
 QToolTip{
     background-color: #363636;
     color: white;

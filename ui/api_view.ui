@@ -21,6 +21,11 @@
      </property>
      <item>
       <widget class="QComboBox" name="comboBox">
+       <property name="font">
+        <font>
+         <family>Consolas</family>
+        </font>
+       </property>
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>
        </property>
@@ -48,6 +53,11 @@
      </item>
      <item>
       <widget class="QLineEdit" name="api_url_lineEdit">
+       <property name="font">
+        <font>
+         <family>Consolas</family>
+        </font>
+       </property>
        <property name="placeholderText">
         <string>请输入API地址</string>
        </property>
@@ -55,6 +65,11 @@
      </item>
      <item>
       <widget class="QPushButton" name="send_pushButton">
+       <property name="font">
+        <font>
+         <family>Consolas</family>
+        </font>
+       </property>
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>
        </property>
@@ -74,6 +89,11 @@
        </property>
        <item>
         <widget class="QPushButton" name="params_pushButton">
+         <property name="font">
+          <font>
+           <family>Consolas</family>
+          </font>
+         </property>
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
@@ -84,6 +104,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="headers_pushButton">
+         <property name="font">
+          <font>
+           <family>Consolas</family>
+          </font>
+         </property>
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
@@ -94,6 +119,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="body_pushButton">
+         <property name="font">
+          <font>
+           <family>Consolas</family>
+          </font>
+         </property>
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
@@ -104,6 +134,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="cookies_pushButton">
+         <property name="font">
+          <font>
+           <family>Consolas</family>
+          </font>
+         </property>
          <property name="cursor">
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
@@ -152,6 +187,11 @@
          </property>
          <item>
           <widget class="QPushButton" name="res_body_pushButton">
+           <property name="font">
+            <font>
+             <family>Consolas</family>
+            </font>
+           </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
@@ -162,6 +202,11 @@
          </item>
          <item>
           <widget class="QPushButton" name="res_cookies_pushButton">
+           <property name="font">
+            <font>
+             <family>Consolas</family>
+            </font>
+           </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
@@ -172,6 +217,11 @@
          </item>
          <item>
           <widget class="QPushButton" name="res_headers_pushButton">
+           <property name="font">
+            <font>
+             <family>Consolas</family>
+            </font>
+           </property>
            <property name="cursor">
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
@@ -241,6 +291,11 @@
          </item>
          <item>
           <widget class="QPushButton" name="res_save_pushButton">
+           <property name="font">
+            <font>
+             <family>Microsoft YaHei</family>
+            </font>
+           </property>
            <property name="text">
             <string>保存</string>
            </property>
