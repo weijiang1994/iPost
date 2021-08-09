@@ -22,6 +22,8 @@ HEADER_ITEMS = ['Accept-Encoding', 'Accept-Charset', 'Accept-Language', 'Access-
 TABLE_ITEM_UNSELECT_BGCOLOR = {'vs-dark': '#383939'}
 TABLE_ITEM_SELECT_BGCOLOR = {'vs-dark': '#2D2D30'}
 
+HTTP_CODE_COLOR = {200: 'green', 400: 'red', 404: 'red', 403: 'red', 405: 'red', 500: 'red'}
+
 
 class Icon(enum.Enum):
     ADD_LINE_ICON = basedir + '/resources/images/add-line.png'
