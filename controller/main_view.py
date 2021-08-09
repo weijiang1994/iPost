@@ -21,7 +21,10 @@ class MainView(Ui_MainWindow, QMainWindow):
         self.setupUi(self)
         self.label.setVisible(False)
         self.gridLayout.addWidget(WorkspaceFrame())
-        # self.setStyleSheet(read_qss(basedir + '/resources/vss-dark.qss'))
+        self.menu.setProperty('class', 'main-menu')
+        self.menu_2.setProperty('class', 'main-menu')
+        self.menu_3.setProperty('class', 'main-menu')
+        self.menu_4.setProperty('class', 'main-menu')
 
 
 if __name__ == '__main__':
