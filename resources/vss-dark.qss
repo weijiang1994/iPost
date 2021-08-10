@@ -3,6 +3,7 @@ QMenuBar,
 QMenu {
     font-family: Consolas, "Microsoft YaHei UI", sans-serif;
     font-size: 14px;
+    outline: 0;
 }
 
 QCheckBox::indicator:checked {
