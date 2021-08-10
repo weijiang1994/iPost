@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>333</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="10,0">
      <item>
       <widget class="QLabel" name="label">
@@ -41,7 +41,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="10,0">
      <item>
       <widget class="QLabel" name="label_5">
@@ -68,12 +68,12 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="10,1">
      <item>
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Connect Timeout</string>
+        <string>Connect timeout</string>
        </property>
       </widget>
      </item>
@@ -92,17 +92,41 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="10,1">
      <item>
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>ReadTimeout</string>
+        <string>Read timeout</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QLineEdit" name="read_timeout_lineEdit">
+       <property name="minimumSize">
+        <size>
+         <width>90</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="10,1">
+     <item>
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Max redirect</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="max_redirect_lineEdit">
        <property name="minimumSize">
         <size>
          <width>90</width>
