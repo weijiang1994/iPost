@@ -7,25 +7,35 @@
 @Desc    : hint_view
 @Software: PyCharm
 """
-from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout
+from ui.component.hint_view import Ui_Form
+from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QSpacerItem, QSizePolicy, QVBoxLayout
 from PyQt5 import QtGui, QtCore
 from PyQt5.Qt import Qt
+from utils.constants import Icon
 
 
-class HintWidget(QWidget):
-    def __init__(self, msg=None):
+class HintWidget(QWidget, Ui_Form):
+    def __init__(self, msg=None, pix=None, detail=None):
         super(HintWidget, self).__init__()
-        self.label = None
+        self.setupUi(self)
+        self.pix = pix
+        self.detail = detail
         self.msg = msg
         self.g_layout = QGridLayout()
+        self.v_layout = QVBoxLayout()
         self.init_ui()
 
     def init_ui(self):
-        self.label = QLabel(self.msg if self.msg is not None else 'No Hint Message')
-        self.g_layout.addWidget(self.label)
-        self.g_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.setLayout(self.g_layout)
-        self.setGeometry(300, 300, 200, 120)
+        if self.pix is not None:
+            self.icon_label.setPixmap(QtGui.QPixmap(self.pix))
+        else:
+            self.icon_label.setVisible(False)
+        self.hint_msg_label.setText(self.msg if self.msg is not None else 'No Hint Message')
+        if self.detail is not None:
+            self.detail_label.setText(self.detail)
+            self.detail_label.setProperty('class', 'detail-label')
+        else:
+            self.detail_label.setVisible(False)
 
 
 if __name__ == '__main__':
