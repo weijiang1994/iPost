@@ -34,9 +34,11 @@ BUTTON_NORMAL = """
 """
 
 BUTTON_SELECTED = """
-    background-color: transparent;
-    border-radius: 0;
-    border-bottom: 2px solid 78c6ee;
+    QPushButton{
+        background-color: transparent;
+        border-radius: 0;
+        border-bottom: 2px solid 78c6ee;
+    }
 """
 
 

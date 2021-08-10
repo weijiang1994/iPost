@@ -11,11 +11,13 @@ from PyQt5.QtGui import QCursor, QMouseEvent
 from ui.api_view import Ui_Form
 from utils.common import read_qss, basedir, update_btn_stylesheet, BUTTON_NORMAL, BUTTON_SELECTED, display_level, \
     get_cookies_data
-from utils.constants import HTTP_CODE_COLOR
+from utils.constants import HTTP_CODE_COLOR, Icon
 import json
 import requests
 from controller.component.table_view import HeadersTableView, ParamsTableView, ResponseTable
 from controller.component.json_editor import JSONEditor
+from controller.component.hint_view import HintWidget
+from controller.component.request_set_view import RequestSetView
 from threading import Thread
 from PyQt5.QtCore import pyqtSignal, QEvent, QPropertyAnimation
 import traceback
@@ -30,12 +32,16 @@ class ApiView(Ui_Form, QWidget):
         self.params_tw = ParamsTableView()
         self.headers_tw = HeadersTableView()
         self.editor = JSONEditor()
+        self.request_set_view = RequestSetView()
         self.x_position = 0
         self.y_position = 0
         self.init_slot()
-        self.buttons = [self.params_pushButton, self.headers_pushButton, self.body_pushButton, self.cookies_pushButton]
+        self.buttons = [self.params_pushButton, self.headers_pushButton, self.body_pushButton, self.cookies_pushButton,
+                        self.setting_pushButton]
         self.res_buttons = [self.res_body_pushButton, self.res_cookies_pushButton, self.res_headers_pushButton]
         self.init_ui()
+        self.resp_cookie_widget = None
+        self.resp_header_widget = None
 
     def init_ui(self):
         update_btn_stylesheet(self.buttons, 0)
@@ -48,6 +54,7 @@ class ApiView(Ui_Form, QWidget):
         self.api_stackedWidget.addWidget(self.headers_tw)
         self.api_stackedWidget.addWidget(QWidget())
         self.api_stackedWidget.addWidget(QWidget())
+        self.api_stackedWidget.addWidget(self.request_set_view)
         self.send_pushButton.setProperty('class', 'Postman')
         self.api_url_lineEdit.setProperty('class', 'ApiUrl')
         self.res_stackedWidget.addWidget(self.editor)
@@ -59,6 +66,7 @@ class ApiView(Ui_Form, QWidget):
         self.headers_pushButton.clicked.connect(lambda: self.choose_item('headers'))
         self.body_pushButton.clicked.connect(lambda: self.choose_item('body'))
         self.cookies_pushButton.clicked.connect(lambda: self.choose_item('cookies'))
+        self.setting_pushButton.clicked.connect(lambda: self.choose_item('setting'))
         self.res_body_pushButton.clicked.connect(lambda: self.choose_item('r_body'))
         self.res_headers_pushButton.clicked.connect(lambda: self.choose_item('r_headers'))
         self.res_cookies_pushButton.clicked.connect(lambda: self.choose_item('r_cookies'))
@@ -69,6 +77,11 @@ class ApiView(Ui_Form, QWidget):
         self.editor.setText(list_data[1])
         self.send_pushButton.setText('Send')
         self.send_pushButton.setEnabled(True)
+        # 如果不为空则说明已经请求过则先清理
+        if self.resp_cookie_widget is not None:
+            self.res_stackedWidget.removeWidget(self.resp_cookie_widget)
+            self.res_stackedWidget.removeWidget(self.resp_header_widget)
+
         if list_data[0]:
             self.code_label.setText(str(list_data[2]))
             self.code_label.setStyleSheet(f"color:{HTTP_CODE_COLOR.get(list_data[2])}")
@@ -84,18 +97,26 @@ class ApiView(Ui_Form, QWidget):
             self.size_label.setToolTip(f'<p>Response Size: {size}</p>'
                                        f'<p style="color: white;">Body Size: {body_size}</p>'
                                        f'<p style="color: white;">Header Size: {header_size}</p>')
-            if not list_data[5]:
-                label = QLabel('请求中暂未包含有cookies')
-                self.res_stackedWidget.addWidget(label)
+
+            if list_data[5]:
+                self.resp_cookie_widget = ResponseTable(
+                    headers=['Name', 'Value', 'Domain', 'Path', 'Expires', 'HttpOnly', 'Secure'])
+                self.resp_cookie_widget.render_cookies(get_cookies_data(list_data[5]))
+                self.res_stackedWidget.addWidget(self.resp_cookie_widget)
             else:
-                cookie_table = ResponseTable(headers=['Name', 'Value', 'Domain', 'Path', 'Expires', 'HttpOnly', 'Secure'])
-                cookie_table.render_cookies(get_cookies_data(list_data[5]))
-                self.res_stackedWidget.addWidget(cookie_table)
+                self.resp_cookie_widget = HintWidget('No cookies yet',
+                                                     pix=Icon.COOKIES.value,
+                                                     detail='Find all your cookies and their associated domains here.')
+                self.res_stackedWidget.addWidget(self.resp_cookie_widget)
 
             if list_data[4]:
-                headers_table = ResponseTable()
-                headers_table.render_data(list_data[4])
-                self.res_stackedWidget.addWidget(headers_table)
+                self.resp_header_widget = ResponseTable()
+                self.resp_header_widget.render_data(list_data[4])
+                self.res_stackedWidget.addWidget(self.resp_header_widget)
+            else:
+                self.resp_header_widget = HintWidget('No headers yet')
+                self.res_stackedWidget.addWidget(self.resp_header_widget)
+
         else:
             self.code_label.setText(str(list_data[-1]))
             self.code_label.setStyleSheet(f"color:{HTTP_CODE_COLOR.get(list_data[2])}")
@@ -123,7 +144,10 @@ class ApiView(Ui_Form, QWidget):
         try:
             res = None
             if method == 'GET':
-                res = requests.get(api_url, headers=headers if headers else {})
+                res = requests.get(api_url,
+                                   headers=headers if headers else {},
+                                   allow_redirects=self.request_set_view.redirect,
+                                   verify=self.request_set_view.ssl)
             if method == 'POST':
                 res = requests.post(api_url, headers=headers if headers else {})
             if method == 'PUT':
@@ -155,6 +179,10 @@ class ApiView(Ui_Form, QWidget):
         elif tag == 'cookies':
             update_btn_stylesheet(self.buttons, index=3)
             self.api_stackedWidget.setCurrentIndex(3)
+
+        elif tag == 'setting':
+            update_btn_stylesheet(self.buttons, index=4)
+            self.api_stackedWidget.setCurrentIndex(4)
 
         elif tag == 'r_body':
             update_btn_stylesheet(self.res_buttons, index=0)

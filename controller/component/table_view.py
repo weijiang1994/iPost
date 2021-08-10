@@ -29,7 +29,7 @@ class TableWidget(QTableWidget):
         super(TableWidget, self).__init__()
         self.verticalHeader().setVisible(False)
         self.setColumnCount(3)
-        self.setHorizontalHeaderLabels(['键', '值', '描述'])
+        self.setHorizontalHeaderLabels(['KEY', 'VALUE', 'DESC'])
         self.setColumnWidth(0, 10)
         self.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.AnyKeyPressed)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -54,6 +54,8 @@ class BaseTableView(Ui_Form, QWidget):
         self.verticalLayout.removeWidget(self.tableWidget)
         self.tableWidget = TableWidget()
         self.verticalLayout.addWidget(self.tableWidget)
+        self.label.setText('Query')
+        self.checkBox.setText('Description')
 
     def set_desc(self):
         if self.checkBox.isChecked():
@@ -70,7 +72,7 @@ class ParamsTableView(BaseTableView):
 class HeadersTableView(BaseTableView):
     def __init__(self):
         super(HeadersTableView, self).__init__()
-        self.label.setText('请求头')
+        self.label.setText('Headers')
         self.headers = [['User-Agent', 'iPost Runtime v1.0.23', ''],
                         ['Accept', '*/*', ''],
                         ['Accept-Encoding', 'gzip, deflate, br', ''],

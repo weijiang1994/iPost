@@ -52,7 +52,7 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
         self.label.setText(_translate("Form", "查询参数"))
-        self.checkBox.setText(_translate("Form", "显示描述"))
+        self.checkBox.setText(_translate("Form", "Description"))
         item = self.tableWidget.horizontalHeaderItem(0)
         item.setText(_translate("Form", "键"))
         item = self.tableWidget.horizontalHeaderItem(1)
