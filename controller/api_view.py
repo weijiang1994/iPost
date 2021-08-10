@@ -144,7 +144,10 @@ class ApiView(Ui_Form, QWidget):
         try:
             res = None
             if method == 'GET':
-                res = requests.get(api_url, headers=headers if headers else {})
+                res = requests.get(api_url,
+                                   headers=headers if headers else {},
+                                   allow_redirects=self.request_set_view.redirect,
+                                   verify=self.request_set_view.ssl)
             if method == 'POST':
                 res = requests.post(api_url, headers=headers if headers else {})
             if method == 'PUT':
