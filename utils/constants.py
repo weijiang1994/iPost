@@ -35,3 +35,6 @@ class Icon(enum.Enum):
     ALIGN_LEFT = basedir + '/resources/images/align-left.png'
     ALIGN_CENTER = basedir + '/resources/images/align-center.png'
     LOCATION = basedir + '/resources/images/location.png'
+    COOKIES = basedir + '/resources/images/cookies.png'
+    TOGGLE_ON = basedir + '/resources/images/toggle-on.png'
+    TOGGLE_OFF = basedir + '/resources/images/toggle-off.png'
