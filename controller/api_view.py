@@ -15,7 +15,7 @@ from utils.constants import HTTP_CODE_COLOR, Icon
 import json
 import requests
 from controller.component.table_view import HeadersTableView, ParamsTableView, ResponseTable
-from controller.component.json_editor import JSONEditor
+from controller.component.qsci_editor import JSONEditor, HTMLEditor
 from controller.component.hint_view import HintWidget
 from controller.component.request_set_view import RequestSetView
 from threading import Thread
