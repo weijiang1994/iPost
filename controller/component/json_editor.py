@@ -16,6 +16,7 @@ class JSONEditor(QsciScintilla):
     def __init__(self):
         super(JSONEditor, self).__init__()
         self.font = QFont()
+        self.font.setFamily('Consolas')
         self.font.setPointSize(12)
         self.setWrapMode(QsciScintilla.WrapWord)
         self.setWrapVisualFlags(QsciScintilla.WrapFlagNone)
