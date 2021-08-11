@@ -61,10 +61,20 @@ class HTMLEditor(BaseEditor):
 
 
 if __name__ == '__main__':
-    from PyQt5.QtWidgets import QApplication
+    from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
     import sys
-
     app = QApplication(sys.argv)
-    win = HTMLEditor()
+    win = QWidget()
+    l1 = QLabel('HTML Editor')
+    l2 = QLabel('JSON Editor')
+    v_layout = QVBoxLayout()
+    json_editor = JSONEditor()
+    html_editor = HTMLEditor()
+    v_layout.addWidget(l1)
+    v_layout.addWidget(html_editor)
+    v_layout.addWidget(l2)
+    v_layout.addWidget(json_editor)
+    win.setLayout(v_layout)
+    win.setGeometry(0, 0, 600, 400)
     win.show()
     sys.exit(app.exec_())
