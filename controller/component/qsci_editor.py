@@ -1,20 +1,20 @@
 """
 coding:utf-8
-file: json_editor.py
+file: qsci_editor.py
 @author: jiangwei
 @contact: jiangwei_1994124@163.com
 @time: 2021/8/2 22:16
 @desc:
 """
-from PyQt5.Qsci import QsciLexerJSON, QsciScintilla
+from PyQt5.Qsci import QsciLexerJSON, QsciScintilla, QsciLexerHTML
 from PyQt5.QtGui import QColor, QFont
 from utils.constants import VSS_DARK_THEME_PATH
 from utils.common import read_qss
 
 
-class JSONEditor(QsciScintilla):
+class BaseEditor(QsciScintilla):
     def __init__(self):
-        super(JSONEditor, self).__init__()
+        super(BaseEditor, self).__init__()
         self.font = QFont()
         self.font.setFamily('Consolas')
         self.font.setPointSize(12)
@@ -39,10 +39,23 @@ class JSONEditor(QsciScintilla):
         self.setFolding(QsciScintilla.BoxedTreeFoldStyle)
         self.setFoldMarginColors(QColor('#ff2D2D30'), QColor('#ff2D2D30'))
 
-        # set JSON lexer
+
+class JSONEditor(BaseEditor):
+    def __init__(self):
+        super(JSONEditor, self).__init__()
         self.lexer = QsciLexerJSON(self)
         self.lexer.setFont(self.font)
         self.setLexer(self.lexer)
+        self.lexer.setDefaultPaper(QColor('#2D2D30'))
+        self.lexer.setPaper(QColor('#2D2D30'))
+
+
+class HTMLEditor(BaseEditor):
+    def __init__(self):
+        super(HTMLEditor, self).__init__()
+        self.lexer = QsciLexerHTML(self)
+        self.lexer.setFont(self.font)
+        self.setLexer(lexer=self.lexer)
         self.lexer.setDefaultPaper(QColor('#2D2D30'))
         self.lexer.setPaper(QColor('#2D2D30'))
 
@@ -52,6 +65,6 @@ if __name__ == '__main__':
     import sys
 
     app = QApplication(sys.argv)
-    win = JSONEditor()
+    win = HTMLEditor()
     win.show()
     sys.exit(app.exec_())
