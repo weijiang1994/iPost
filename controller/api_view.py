@@ -7,6 +7,7 @@ file: api_view.py
 @desc:
 """
 from PyQt5.QtWidgets import QWidget, QMessageBox, QLabel
+from PyQt5.Qt import Qt
 import sys
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QCursor, QMouseEvent
@@ -75,6 +76,7 @@ class ApiView(Ui_Form, QWidget):
         self.res_headers_pushButton.clicked.connect(lambda: self.choose_item('r_headers'))
         self.res_cookies_pushButton.clicked.connect(lambda: self.choose_item('r_cookies'))
         self.request_done.connect(self.render_result)
+        self.api_url_lineEdit.returnPressed.connect(self.send)
 
     def render_result(self, list_data):
         self.send_pushButton.setText('Send')
@@ -180,7 +182,6 @@ class ApiView(Ui_Form, QWidget):
 
         res = self.req_session.send_request(method, **kwargs)
         self.request_done.emit([res.get('result'), res.get('response'), res.get('error_msg')])
-
 
     def choose_item(self, tag):
         if tag == 'params':
