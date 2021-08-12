@@ -34,6 +34,7 @@ class WorkspaceFrame(Ui_Form, QWidget):
         self.new_pushButton.setProperty('class', 'SmallBtn')
         self.tabWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tabWidget.customContextMenuRequested.connect(self.tab_menu)
+        self.tabWidget.setMovable(True)
 
     def tab_menu(self, pos):
         if self.tabWidget.count() <= 0:
