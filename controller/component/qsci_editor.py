@@ -78,10 +78,6 @@ class HTMLEditor(BaseEditor):
         self.lexer.setColor(QColor('#72D02C'), QsciLexerHTML.JavaScriptDoubleQuotedString)
         self.lexer.setColor(QColor('#72D02C'), QsciLexerHTML.JavaScriptSingleQuotedString)
 
-        for i in range(100):
-            if self.lexer.defaultColor(i).getRgb() == (0, 0, 128, 255):
-                print(i)
-
 
 if __name__ == '__main__':
     from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel
