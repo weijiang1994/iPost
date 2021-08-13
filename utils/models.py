@@ -7,15 +7,17 @@
 @Desc    : models
 @Software: PyCharm
 """
-from utils.common import Singleton
+from utils.common import Singleton, basedir
 from sqlalchemy import create_engine, Column, String, INTEGER, TEXT, DATETIME, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 import datetime
 
+db_path = basedir + '/resources/data/data.db'
+
 
 class DBOperator(Singleton):
     def __init__(self):
-        self.engine = create_engine("sqlite+pysqlite:///:memory:", echo=True, future=True)
+        self.engine = create_engine(f"sqlite:///{db_path}", echo=True, future=True)
         self.Model = declarative_base()
         self.session = sessionmaker(self.engine)()
 
@@ -45,7 +47,7 @@ class Collections(db.Model):
     tag = Column(String(512), default=0, nullable=False, comment='0: normal 1:deleted')
     c_time = Column(String(512), default=datetime.datetime.now)
 
-    workspace = relationship('Workspace', back_populates='collection')
+    workspace = relationship('WorkSpace', back_populates='collection')
     request = relationship('Request', back_populates='collection')
 
 
@@ -60,4 +62,11 @@ class Request(db.Model):
     collection_id = Column(INTEGER, ForeignKey('t_collections.id'))
     c_time = Column(DATETIME, default=datetime.datetime.now)
 
-    collection = relationship('Collection', back_populates='request')
+    collection = relationship('Collections', back_populates='request')
+
+
+db.Model.metadata.create_all(db.engine, checkfirst=True)
+
+ws = WorkSpace(name='iPost', summary='I am superman', description='Just test')
+db.session.add(ws)
+db.session.commit()
