@@ -7,6 +7,9 @@ file: api_view.py
 @desc:
 """
 from PyQt5.QtWidgets import QWidget, QMessageBox, QLabel
+from PyQt5.Qt import Qt
+import sys
+from PyQt5.QtWidgets import QApplication, QFileDialog
 from PyQt5.QtGui import QCursor, QMouseEvent
 from ui.api_view import Ui_Form
 from utils.common import read_qss, basedir, update_btn_stylesheet, BUTTON_NORMAL, BUTTON_SELECTED, display_level, \
@@ -18,9 +21,11 @@ from controller.component.table_view import HeadersTableView, ParamsTableView, R
 from controller.component.qsci_editor import JSONEditor, HTMLEditor
 from controller.component.hint_view import HintWidget
 from controller.component.request_set_view import RequestSetView
+from controller.component.bubble import BubbleLabel
 from threading import Thread
 from PyQt5.QtCore import pyqtSignal, QEvent, QPropertyAnimation
 import traceback
+from utils.request import RequestSession
 
 
 class ApiView(Ui_Form, QWidget):
@@ -42,6 +47,9 @@ class ApiView(Ui_Form, QWidget):
         self.init_ui()
         self.resp_cookie_widget = None
         self.resp_header_widget = None
+        self.req_session = RequestSession()
+        self.resp_suffix = 'json'
+        self.content = None
 
     def init_ui(self):
         update_btn_stylesheet(self.buttons, 0)
@@ -71,37 +79,78 @@ class ApiView(Ui_Form, QWidget):
         self.res_headers_pushButton.clicked.connect(lambda: self.choose_item('r_headers'))
         self.res_cookies_pushButton.clicked.connect(lambda: self.choose_item('r_cookies'))
         self.request_done.connect(self.render_result)
+        self.api_url_lineEdit.returnPressed.connect(self.send)
+        self.res_save_pushButton.clicked.connect(self.save_resp)
+
+    def save_resp(self):
+        name = QFileDialog.getSaveFileName(self, 'Save Response', 'response.'+self.resp_suffix,
+                                           filter='"All files (*.*);;html (*.html);;json (*.json)"')
+        try:
+            if name[0] != '' and self.content:
+                filepath = name[0]
+                with open(filepath, 'w') as f:
+                    f.write(self.content)
+                self.show_bubble('文件保存成功!', 'success')
+        except Exception:
+            self.show_bubble('文件保存失败!', 'danger')
+
+    def show_bubble(self, msg, cate='info'):
+        if hasattr(self, "_blabel"):
+            self._blabel.stop()
+            self._blabel.deleteLater()
+            del self._blabel
+        self._blabel = BubbleLabel(cate=cate)
+        self._blabel.setText(msg)
+        self._blabel.show()
 
     def render_result(self, list_data):
-        self.editor.clear()
-        self.editor.setText(list_data[1])
         self.send_pushButton.setText('Send')
         self.send_pushButton.setEnabled(True)
+        self.res_stackedWidget.removeWidget(self.editor)
+
         # 如果不为空则说明已经请求过则先清理
         if self.resp_cookie_widget is not None:
             self.res_stackedWidget.removeWidget(self.resp_cookie_widget)
             self.res_stackedWidget.removeWidget(self.resp_header_widget)
 
+        if self.editor:
+            self.editor.clear()
+
         if list_data[0]:
-            self.code_label.setText(str(list_data[2]))
-            self.code_label.setStyleSheet(f"color:{HTTP_CODE_COLOR.get(list_data[2])}")
-            self.time_label.setText(display_level(list_data[3].microseconds, 1000, labels=['us', 'ms', 's'], level=3))
+            # 获取相应的内容类型, 渲染对应的editor
+            resp_type = list_data[1].headers.get('Content-Type', 'html')
+            if resp_type.__contains__('html'):
+                self.editor = HTMLEditor()
+                self.content = list_data[1].text
+                self.resp_suffix = 'html'
+            elif resp_type.__contains__('json'):
+                self.editor = JSONEditor()
+                self.content = json.dumps(list_data[1].json(), indent=4, ensure_ascii=False, sort_keys=True)
+                self.resp_suffix = 'json'
+
+            self.res_stackedWidget.insertWidget(0, self.editor)
+            self.editor.setText(self.content)
+
+            # 显示请求的相关信息
+            self.code_label.setText(str(list_data[1].status_code))
+            self.code_label.setStyleSheet(f"color:{HTTP_CODE_COLOR.get(list_data[1].status_code)}")
+            self.time_label.setText(display_level(list_data[1].elapsed.microseconds, 1000, labels=['us', 'ms', 's'], level=3))
             self.time_label.setStyleSheet(f"color: {HTTP_CODE_COLOR.get(200)}")
-            body_size = display_level(int(list_data[4].get('Content-Length', 0)), 1024, labels=['b', 'kb', 'm'],
+            body_size = display_level(int(list_data[1].headers.get('Content-Length', 0)), 1024, labels=['b', 'kb', 'm'],
                                       level=3)
-            header_size = display_level(len(str(list_data[4])), 1024, labels=['b', 'kb', 'm'], level=3)
-            size = int(list_data[4].get('Content-Length', 0)) + len(str(list_data[4]))
+            header_size = display_level(len(str(list_data[1].headers)), 1024, labels=['b', 'kb', 'm'], level=3)
+            size = int(list_data[1].headers.get('Content-Length', 0)) + len(str(list_data[1].headers))
             size = display_level(size, 1024, labels=['b', 'kb', 'm'], level=3)
             self.size_label.setText(size)
             self.size_label.setStyleSheet(f'color: {HTTP_CODE_COLOR.get(200)}')
             self.size_label.setToolTip(f'<p>Response Size: {size}</p>'
                                        f'<p style="color: white;">Body Size: {body_size}</p>'
                                        f'<p style="color: white;">Header Size: {header_size}</p>')
-
-            if list_data[5]:
+            # 显示cookies
+            if list_data[1].cookies:
                 self.resp_cookie_widget = ResponseTable(
                     headers=['Name', 'Value', 'Domain', 'Path', 'Expires', 'HttpOnly', 'Secure'])
-                self.resp_cookie_widget.render_cookies(get_cookies_data(list_data[5]))
+                self.resp_cookie_widget.render_cookies(get_cookies_data(list_data[1].cookies))
                 self.res_stackedWidget.addWidget(self.resp_cookie_widget)
             else:
                 self.resp_cookie_widget = HintWidget('No cookies yet',
@@ -109,19 +158,25 @@ class ApiView(Ui_Form, QWidget):
                                                      detail='Find all your cookies and their associated domains here.')
                 self.res_stackedWidget.addWidget(self.resp_cookie_widget)
 
-            if list_data[4]:
+            # 显示响应headers
+            if list_data[1].headers:
                 self.resp_header_widget = ResponseTable()
-                self.resp_header_widget.render_data(list_data[4])
+                self.resp_header_widget.render_data(list_data[1].headers)
                 self.res_stackedWidget.addWidget(self.resp_header_widget)
             else:
                 self.resp_header_widget = HintWidget('No headers yet')
                 self.res_stackedWidget.addWidget(self.resp_header_widget)
-
+            self.res_body_pushButton.click()
         else:
-            self.code_label.setText(str(list_data[-1]))
-            self.code_label.setStyleSheet(f"color:{HTTP_CODE_COLOR.get(list_data[2])}")
+            self.editor = JSONEditor()
+            self.res_stackedWidget.insertWidget(0, self.editor)
+            self.editor.setText(list_data[2])
+            self.code_label.setText('Error')
+            self.code_label.setStyleSheet(f"color: red")
             self.time_label.setText('NaN')
+            self.time_label.setStyleSheet(f"color: red")
             self.size_label.setText('NaN')
+            self.size_label.setStyleSheet(f"color: red")
 
     def send(self):
         api_url = self.api_url_lineEdit.text()
@@ -141,27 +196,19 @@ class ApiView(Ui_Form, QWidget):
         th.start()
 
     def send_request(self, api_url, method='GET', headers=None):
-        try:
-            res = None
-            if method == 'GET':
-                res = requests.get(api_url,
-                                   headers=headers if headers else {},
-                                   allow_redirects=self.request_set_view.redirect,
-                                   verify=self.request_set_view.ssl)
-            if method == 'POST':
-                res = requests.post(api_url, headers=headers if headers else {})
-            if method == 'PUT':
-                res = requests.post(api_url, headers=headers if headers else {})
-            if method == 'DELETE':
-                res = requests.delete(api_url, headers=headers if headers else {})
-            json_text = json.dumps(res.json(), indent=4, ensure_ascii=False, sort_keys=True)
-            self.request_done.emit([True, json_text, res.status_code, res.elapsed, res.headers, res.cookies])
-        except Exception as e:
-            if res is not None:
-                self.request_done.emit([False, f'获取接口数据出错!\n错误信息:\n{str(traceback.format_exc())}\n接口原始数据：\n'
-                                               f'{res.text}', res.status_code])
-            else:
-                self.request_done.emit([False, f'获取接口数据出错!\n错误信息:\n{str(traceback.format_exc())}'])
+        self.req_session.set_url(api_url)
+        self.req_session.max_redirects = int(self.request_set_view.max_redirect_lineEdit.text())
+        conn_timeout = self.request_set_view.conn_timeout_lineEdit.text()
+        read_timeout = self.request_set_view.read_timeout_lineEdit.text()
+
+        kwargs = {'headers': headers,
+                  'timeout': (int(conn_timeout) if conn_timeout != '' else None,
+                              int(read_timeout) if read_timeout != '' else None),
+                  'allow_redirects': self.request_set_view.redirect,
+                  'verify': self.request_set_view.ssl}
+
+        res = self.req_session.send_request(method, **kwargs)
+        self.request_done.emit([res.get('result'), res.get('response'), res.get('error_msg')])
 
     def choose_item(self, tag):
         if tag == 'params':
@@ -198,9 +245,6 @@ class ApiView(Ui_Form, QWidget):
 
 
 if __name__ == '__main__':
-    import sys
-    from PyQt5.QtWidgets import QApplication
-
     app = QApplication(sys.argv)
     win = ApiView()
     win.show()

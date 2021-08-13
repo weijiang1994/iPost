@@ -17,7 +17,7 @@ class BaseEditor(QsciScintilla):
         super(BaseEditor, self).__init__()
         self.font = QFont()
         self.font.setFamily('Consolas')
-        self.font.setPointSize(12)
+        self.font.setPointSize(10)
         self.setWrapMode(QsciScintilla.WrapWord)
         self.setWrapVisualFlags(QsciScintilla.WrapFlagNone)
         self.setTabWidth(4)
@@ -48,6 +48,11 @@ class JSONEditor(BaseEditor):
         self.setLexer(self.lexer)
         self.lexer.setDefaultPaper(QColor('#2D2D30'))
         self.lexer.setPaper(QColor('#2D2D30'))
+        self.lexer.setColor(QColor('#5AB8F7'), QsciLexerJSON.Property)
+        self.lexer.setColor(QColor("#99C38E"), QsciLexerJSON.Number)
+        self.lexer.setColor(QColor('#C87F4F'), QsciLexerJSON.String)
+        self.lexer.setColor(QColor('#FF0000'), QsciLexerJSON.Error)
+        self.lexer.setColor(QColor("#FFFFFF"), QsciLexerJSON.Operator)
 
 
 class HTMLEditor(BaseEditor):
@@ -65,12 +70,13 @@ class HTMLEditor(BaseEditor):
         self.lexer.setColor(QColor('#75715A'), QsciLexerHTML.UnknownTag)
         self.lexer.setColor(QColor('#FFFFFF'), QsciLexerHTML.Default)
         self.lexer.setColor(QColor('#eeeeee'), QsciLexerHTML.SGMLCommand)
-        self.lexer.setColor(QColor('#75715A'), QsciLexerHTML.JavaScriptKeyword)
-
-        for i in range(100):
-            # print(self.lexer.defaultColor(i).getRgb())
-            if self.lexer.defaultColor(i).getRgb() == (0, 0, 128, 255):
-                print(i)
+        self.lexer.setColor(QColor('#F92672'), QsciLexerHTML.JavaScriptKeyword)
+        self.lexer.setColor(QColor('#FFFFFF'), QsciLexerHTML.JavaScriptWord)
+        self.lexer.setColor(QColor('#FFFFFF'), QsciLexerHTML.JavaScriptSymbol)
+        self.lexer.setColor(QColor('#FFFFFF'), QsciLexerHTML.JavaScriptDefault)
+        self.lexer.setColor(QColor('#FFFFFF'), QsciLexerHTML.JavaScriptNumber)
+        self.lexer.setColor(QColor('#72D02C'), QsciLexerHTML.JavaScriptDoubleQuotedString)
+        self.lexer.setColor(QColor('#72D02C'), QsciLexerHTML.JavaScriptSingleQuotedString)
 
 
 if __name__ == '__main__':
@@ -92,6 +98,11 @@ if __name__ == '__main__':
     <title>Sample-default theme</title>
     {{ githubcard.init_css() }}
     {{ githubcard.init_js() }}
+    <style>
+        .username{
+            color: "#123456"
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-2">
@@ -105,14 +116,35 @@ if __name__ == '__main__':
         </div>
     </div>
 </div>
+<script>
+    function call(){
+        console.log("I am Ironman.")
+        let a = 123;
+        console.log('hello' + a);
+        var a = 123;
+        for(i=0;i++;i<20){
+            console.log(i);
+        }
+    }
+</script>
 </body>
 </html>
+    """)
+    json_editor.setText("""{
+    "code": 200,
+    "result": [
+        {
+            "hits": "29",
+            "title": "你可以像只猪一样懒，却无法像只猪一样，懒得心安理得。"
+        }
+    ]
+}
     """)
     v_layout.addWidget(l1)
     v_layout.addWidget(html_editor)
     v_layout.addWidget(l2)
     v_layout.addWidget(json_editor)
     win.setLayout(v_layout)
-    win.setGeometry(0, 0, 600, 400)
+    win.setGeometry(0, 0, 1030, 640)
     win.show()
     sys.exit(app.exec_())
