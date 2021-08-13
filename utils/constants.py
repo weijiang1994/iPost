@@ -38,3 +38,8 @@ class Icon(enum.Enum):
     COOKIES = basedir + '/resources/images/cookies.png'
     TOGGLE_ON = basedir + '/resources/images/toggle-on.png'
     TOGGLE_OFF = basedir + '/resources/images/toggle-off.png'
+
+
+LEVELBG = {'success': '#28B62C', 'info': '#75CAEB', 'danger': '#FF4136', 'warning': '#FF851B'}
+
+LEVELBDBG = {'success': '#28B62C', 'info': '#75CAEB', 'danger': '#FF4136', 'warning': '#FF851B'}
