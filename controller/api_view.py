@@ -9,7 +9,7 @@ file: api_view.py
 from PyQt5.QtWidgets import QWidget, QMessageBox, QLabel
 from PyQt5.Qt import Qt
 import sys
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QFileDialog
 from PyQt5.QtGui import QCursor, QMouseEvent
 from ui.api_view import Ui_Form
 from utils.common import read_qss, basedir, update_btn_stylesheet, BUTTON_NORMAL, BUTTON_SELECTED, display_level, \
@@ -21,6 +21,7 @@ from controller.component.table_view import HeadersTableView, ParamsTableView, R
 from controller.component.qsci_editor import JSONEditor, HTMLEditor
 from controller.component.hint_view import HintWidget
 from controller.component.request_set_view import RequestSetView
+from controller.component.bubble import BubbleLabel
 from threading import Thread
 from PyQt5.QtCore import pyqtSignal, QEvent, QPropertyAnimation
 import traceback
@@ -47,6 +48,8 @@ class ApiView(Ui_Form, QWidget):
         self.resp_cookie_widget = None
         self.resp_header_widget = None
         self.req_session = RequestSession()
+        self.resp_suffix = 'json'
+        self.content = None
 
     def init_ui(self):
         update_btn_stylesheet(self.buttons, 0)
@@ -77,6 +80,28 @@ class ApiView(Ui_Form, QWidget):
         self.res_cookies_pushButton.clicked.connect(lambda: self.choose_item('r_cookies'))
         self.request_done.connect(self.render_result)
         self.api_url_lineEdit.returnPressed.connect(self.send)
+        self.res_save_pushButton.clicked.connect(self.save_resp)
+
+    def save_resp(self):
+        name = QFileDialog.getSaveFileName(self, 'Save Response', 'response.'+self.resp_suffix,
+                                           filter='"All files (*.*);;html (*.html);;json (*.json)"')
+        try:
+            if name[0] != '' and self.content:
+                filepath = name[0]
+                with open(filepath, 'w') as f:
+                    f.write(self.content)
+                self.show_bubble('文件保存成功!', 'success')
+        except Exception:
+            self.show_bubble('文件保存失败!', 'danger')
+
+    def show_bubble(self, msg, cate='info'):
+        if hasattr(self, "_blabel"):
+            self._blabel.stop()
+            self._blabel.deleteLater()
+            del self._blabel
+        self._blabel = BubbleLabel(cate=cate)
+        self._blabel.setText(msg)
+        self._blabel.show()
 
     def render_result(self, list_data):
         self.send_pushButton.setText('Send')
@@ -96,13 +121,15 @@ class ApiView(Ui_Form, QWidget):
             resp_type = list_data[1].headers.get('Content-Type', 'html')
             if resp_type.__contains__('html'):
                 self.editor = HTMLEditor()
-                content = list_data[1].text
+                self.content = list_data[1].text
+                self.resp_suffix = 'html'
             elif resp_type.__contains__('json'):
                 self.editor = JSONEditor()
-                content = json.dumps(list_data[1].json(), indent=4, ensure_ascii=False, sort_keys=True)
+                self.content = json.dumps(list_data[1].json(), indent=4, ensure_ascii=False, sort_keys=True)
+                self.resp_suffix = 'json'
 
             self.res_stackedWidget.insertWidget(0, self.editor)
-            self.editor.setText(content)
+            self.editor.setText(self.content)
 
             # 显示请求的相关信息
             self.code_label.setText(str(list_data[1].status_code))
