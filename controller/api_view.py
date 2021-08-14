@@ -6,24 +6,22 @@ file: api_view.py
 @time: 2021/7/18 20:51
 @desc:
 """
-from PyQt5.QtWidgets import QWidget, QMessageBox, QLabel
-from PyQt5.Qt import Qt
+from PyQt5.QtWidgets import QWidget, QMessageBox
 import sys
 from PyQt5.QtWidgets import QApplication, QFileDialog
-from PyQt5.QtGui import QCursor, QMouseEvent
 from ui.api_view import Ui_Form
-from utils.common import read_qss, basedir, update_btn_stylesheet, BUTTON_NORMAL, BUTTON_SELECTED, display_level, \
+from utils.common import update_btn_stylesheet, display_level, \
     get_cookies_data
 from utils.constants import HTTP_CODE_COLOR, Icon
 import json
-import requests
 from controller.component.table_view import HeadersTableView, ParamsTableView, ResponseTable
 from controller.component.qsci_editor import JSONEditor, HTMLEditor
 from controller.component.hint_view import HintWidget
 from controller.component.request_set_view import RequestSetView
 from controller.component.bubble import BubbleLabel
+from controller.component.request_body_view import RequestBody
 from threading import Thread
-from PyQt5.QtCore import pyqtSignal, QEvent, QPropertyAnimation
+from PyQt5.QtCore import pyqtSignal
 import traceback
 from utils.request import RequestSession
 
@@ -38,6 +36,7 @@ class ApiView(Ui_Form, QWidget):
         self.headers_tw = HeadersTableView()
         self.editor = JSONEditor()
         self.request_set_view = RequestSetView()
+        self.request_body_view = RequestBody()
         self.x_position = 0
         self.y_position = 0
         self.init_slot()
@@ -60,7 +59,7 @@ class ApiView(Ui_Form, QWidget):
         self.res_stackedWidget.removeWidget(self.page_4)
         self.api_stackedWidget.addWidget(self.params_tw)
         self.api_stackedWidget.addWidget(self.headers_tw)
-        self.api_stackedWidget.addWidget(QWidget())
+        self.api_stackedWidget.addWidget(self.request_body_view)
         self.api_stackedWidget.addWidget(QWidget())
         self.api_stackedWidget.addWidget(self.request_set_view)
         self.send_pushButton.setProperty('class', 'Postman')
@@ -88,10 +87,11 @@ class ApiView(Ui_Form, QWidget):
         try:
             if name[0] != '' and self.content:
                 filepath = name[0]
-                with open(filepath, 'w') as f:
+                with open(filepath, 'w', encoding='utf-8') as f:
                     f.write(self.content)
                 self.show_bubble('文件保存成功!', 'success')
         except Exception:
+            print(traceback.format_exc())
             self.show_bubble('文件保存失败!', 'danger')
 
     def show_bubble(self, msg, cate='info'):
