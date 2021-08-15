@@ -15,15 +15,18 @@ from utils.common import read_qss
 from utils.config import MyConfig
 from utils.constants import BASE_CONFIG_PATH, VSS_DARK_THEME_PATH, Icon
 from controller.api_view import ApiView
+from controller.component.hint_dialog import HintBase
 
 
 class WorkspaceFrame(Ui_Form, QWidget):
-    def __init__(self):
+    def __init__(self, parent=None):
         super(WorkspaceFrame, self).__init__()
         self.setupUi(self)
         self.init_ui()
         self.init_slot()
         self.config = MyConfig(path=BASE_CONFIG_PATH)
+        self.parent = parent
+        print(self.parent.geometry())
 
     def init_ui(self):
         self.workspace_listWidget.setCurrentRow(0)
@@ -94,9 +97,11 @@ class WorkspaceFrame(Ui_Form, QWidget):
 
     def new_request(self):
         if self.tabWidget.count() >= int(self.config.read_config('base', 'max_tab')):
-            QMessageBox.warning(self, '过多的TAB', f'TAB最多不能超过{self.config.read_config("base", "max_tab")},'
-                                                f'如需要开启更多请前往设置进行配置!')
+            self.hb = HintBase(parent=self.parent)
+            # QMessageBox.warning(self, '过多的TAB', f'TAB最多不能超过{self.config.read_config("base", "max_tab")},'
+            #                                     f'如需要开启更多请前往设置进行配置!')
             return
+        #
         widget = ApiView()
         self.tabWidget.addTab(widget, '新的Request')
         self.tabWidget.setCurrentWidget(widget)

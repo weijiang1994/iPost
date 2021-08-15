@@ -43,3 +43,10 @@ class Icon(enum.Enum):
 LEVELBG = {'success': '#28B62C', 'info': '#75CAEB', 'danger': '#FF4136', 'warning': '#FF851B'}
 
 LEVELBDBG = {'success': '#28B62C', 'info': '#75CAEB', 'danger': '#FF4136', 'warning': '#FF851B'}
+
+HINT_DIALOG_BASE_ATTR = """
+#hint{
+    background: white;
+    border-radius: 10px;
+}
+"""
