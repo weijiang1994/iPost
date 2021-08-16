@@ -10,14 +10,14 @@ from PyQt5.QtCore import QPoint
 from PyQt5.QtWidgets import QWidget, QDesktopWidget
 from PyQt5.Qt import Qt
 from ui.component.hint_base_view import Ui_Form
-from utils.constants import LEVELBG, HINT_DIALOG_BASE_ATTR
+from utils.constants import HINTBG, HINT_DIALOG_BASE_ATTR, Icon
+from PyQt5.QtGui import QPixmap
 
 
 class HintBase(QWidget, Ui_Form):
     def __init__(self, parent=None):
         super(HintBase, self).__init__()
         self.setupUi(self)
-        self.setObjectName('hint')
         self.parent = parent
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.center()
@@ -25,6 +25,9 @@ class HintBase(QWidget, Ui_Form):
         self.show()
         self.close_pushButton.clicked.connect(self.close)
         self.setStyleSheet(HINT_DIALOG_BASE_ATTR)
+        self.hint_icon_label.setMaximumSize(40, 40)
+        self.hint_icon_label.setScaledContents(True)
+        self.hint_icon_label.setMargin(8)
 
     def mousePressEvent(self, event):
         self.oldPos = event.globalPos()
@@ -41,25 +44,45 @@ class HintBase(QWidget, Ui_Form):
             qr.moveCenter(cp)
             self.move(qr.topLeft())
         else:
-            try:
-                pp = self.parent.geometry().center()
-                qr.moveCenter(pp)
-                self.move(qr.topLeft())
-            except Exception:
-                import traceback
-                print(traceback.format_exc())
+            pp = self.parent.geometry().center()
+            qr.moveCenter(pp)
+            self.move(qr.topLeft())
 
 
 class SuccessHintDialog(HintBase):
-    pass
+    def __init__(self, msg=''):
+        super(SuccessHintDialog, self).__init__()
+        self.setStyleSheet(HINT_DIALOG_BASE_ATTR % (HINTBG.get('success'), HINTBG.get('success')))
+        self.hint_icon_label.setPixmap(QPixmap(Icon.SUC_ICON.value))
+        self.hint_cate_label.setText('成功')
+        self.hint_msg_label.setText(msg)
 
 
 class ErrorHintDialog(HintBase):
-    pass
+    def __init__(self, msg):
+        super(ErrorHintDialog, self).__init__()
+        self.setStyleSheet(HINT_DIALOG_BASE_ATTR % (HINTBG.get('error'), HINTBG.get('error')))
+        self.hint_icon_label.setPixmap(QPixmap(Icon.ERR_ICON.value))
+        self.hint_cate_label.setText('错误')
+        self.hint_msg_label.setText(msg)
 
 
 class InfoHintDialog(HintBase):
-    pass
+    def __init__(self, msg):
+        super(InfoHintDialog, self).__init__()
+        self.setStyleSheet(HINT_DIALOG_BASE_ATTR % (HINTBG.get('info'), HINTBG.get('info')))
+        self.hint_icon_label.setPixmap(QPixmap(Icon.INFO_ICON.value))
+        self.hint_cate_label.setText('提示')
+        self.hint_msg_label.setText(msg)
+
+
+class WarningHintDialog(HintBase):
+    def __init__(self, msg):
+        super(WarningHintDialog, self).__init__()
+        self.setStyleSheet(HINT_DIALOG_BASE_ATTR % (HINTBG.get('warning'), HINTBG.get('warning')))
+        self.hint_icon_label.setPixmap(QPixmap(Icon.INFO_ICON.value))
+        self.hint_cate_label.setText('警告')
+        self.hint_msg_label.setText(msg)
 
 
 if __name__ == '__main__':
@@ -67,6 +90,6 @@ if __name__ == '__main__':
     from PyQt5.QtWidgets import QApplication
 
     app = QApplication(sys.argv)
-    win = HintBase()
+    win = SuccessHintDialog('操作成功')
     win.show()
     sys.exit(app.exec_())
