@@ -15,7 +15,7 @@ from utils.common import read_qss
 from utils.config import MyConfig
 from utils.constants import BASE_CONFIG_PATH, VSS_DARK_THEME_PATH, Icon
 from controller.api_view import ApiView
-from controller.component.hint_dialog import HintBase
+from controller.component.hint_dialog import ErrorHintDialog
 
 
 class WorkspaceFrame(Ui_Form, QWidget):
@@ -66,7 +66,7 @@ class WorkspaceFrame(Ui_Form, QWidget):
         elif action == close_right:
             cur_idx = self.tabWidget.currentIndex()
             for i in range(cur_idx, self.tabWidget.count()):
-                self.tabWidget.removeTab(cur_idx+1)
+                self.tabWidget.removeTab(cur_idx + 1)
 
         elif action == close_left:
             cur_idx = self.tabWidget.currentIndex()
@@ -97,11 +97,10 @@ class WorkspaceFrame(Ui_Form, QWidget):
 
     def new_request(self):
         if self.tabWidget.count() >= int(self.config.read_config('base', 'max_tab')):
-            self.hb = HintBase(parent=self.parent)
-            # QMessageBox.warning(self, '过多的TAB', f'TAB最多不能超过{self.config.read_config("base", "max_tab")},'
-            #                                     f'如需要开启更多请前往设置进行配置!')
+            self.hb = ErrorHintDialog(parent=self.parent, msg=f'TAB最多不能超过{self.config.read_config("base", "max_tab")},'
+                                                              f'如需要开启更多请前往设置进行配置!')
             return
-        #
+
         widget = ApiView()
-        self.tabWidget.addTab(widget, '新的Request')
+        self.tabWidget.addTab(widget, 'Untitled Request')
         self.tabWidget.setCurrentWidget(widget)

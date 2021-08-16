@@ -27,7 +27,10 @@ class HintBase(QWidget, Ui_Form):
         self.setStyleSheet(HINT_DIALOG_BASE_ATTR)
         self.hint_icon_label.setMaximumSize(40, 40)
         self.hint_icon_label.setScaledContents(True)
-        self.hint_icon_label.setMargin(8)
+        self.hint_msg_label.setWordWrap(True)
+        self.hint_icon_label.setProperty('class', 'icon')
+        self.hint_cate_label.setProperty('class', 'text')
+        self.hint_msg_label.setProperty('class', 'text')
 
     def mousePressEvent(self, event):
         self.oldPos = event.globalPos()
@@ -59,8 +62,8 @@ class SuccessHintDialog(HintBase):
 
 
 class ErrorHintDialog(HintBase):
-    def __init__(self, msg):
-        super(ErrorHintDialog, self).__init__()
+    def __init__(self, msg, *args, **kwargs):
+        super(ErrorHintDialog, self).__init__(*args, **kwargs)
         self.setStyleSheet(HINT_DIALOG_BASE_ATTR % (HINTBG.get('error'), HINTBG.get('error')))
         self.hint_icon_label.setPixmap(QPixmap(Icon.ERR_ICON.value))
         self.hint_cate_label.setText('错误')
@@ -90,6 +93,6 @@ if __name__ == '__main__':
     from PyQt5.QtWidgets import QApplication
 
     app = QApplication(sys.argv)
-    win = SuccessHintDialog('操作成功')
+    win = InfoHintDialog('操作成功')
     win.show()
     sys.exit(app.exec_())

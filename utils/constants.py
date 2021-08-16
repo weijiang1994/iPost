@@ -59,4 +59,10 @@ QPushButton{
     border: none;
     margin: 3px
 }
+QLabel[class='icon']{
+    padding: 8px;
+}
+QLabel[class='text']{
+    padding-left: 10px;
+}
 """
