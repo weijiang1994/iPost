@@ -84,12 +84,13 @@ def display_level(number: int or float, base: int, labels: list, level: int, rou
         if number < base ** i:
             return str(round(number / base ** (i - 1), round_num)).strip('.0') + str(labels[i - 1])
     if number > base ** level:
-        return str(round(number / base ** (level-1), round_num)).strip('.0') + str(labels[-1])
+        return str(round(number / base ** (level - 1), round_num)).strip('.0') + str(labels[-1])
 
 
 def get_cookies_data(cookies):
     ret = []
     for c in cookies:
-        a = [c.name, c.value, c.domain, c.path, c.expires, True if c._rest.get('HttpOnly', False) is None else False, c.secure]
+        a = [c.name, c.value, c.domain, c.path, c.expires, True if c._rest.get('HttpOnly', False) is None else False,
+             c.secure]
         ret.append(a)
     return ret

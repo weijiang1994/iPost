@@ -8,7 +8,7 @@
 @Software: PyCharm
 """
 from ui.workspace_view import Ui_Form
-from PyQt5.QtWidgets import QWidget, QMessageBox, QMenu, QAction
+from PyQt5.QtWidgets import QWidget, QMessageBox, QMenu, QAction, QTabBar, QTreeWidget
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 from utils.common import read_qss
@@ -16,23 +16,28 @@ from utils.config import MyConfig
 from utils.constants import BASE_CONFIG_PATH, VSS_DARK_THEME_PATH, Icon
 from controller.api_view import ApiView
 from controller.component.hint_dialog import ErrorHintDialog
+from controller.component.history_view import HistoryView
 
 
 class WorkspaceFrame(Ui_Form, QWidget):
     def __init__(self, parent=None):
         super(WorkspaceFrame, self).__init__()
         self.setupUi(self)
+        self.history_view = HistoryView()
         self.init_ui()
         self.init_slot()
         self.config = MyConfig(path=BASE_CONFIG_PATH)
         self.parent = parent
-        print(self.parent.geometry())
 
     def init_ui(self):
         self.workspace_listWidget.setCurrentRow(0)
         self.workspace_stackedWidget.setAutoFillBackground(True)
         self.tabWidget.removeTab(1)
         self.tabWidget.removeTab(0)
+        self.workspace_stackedWidget.removeWidget(self.page)
+        self.workspace_stackedWidget.removeWidget(self.page_2)
+        self.workspace_stackedWidget.addWidget(QWidget())
+        self.workspace_stackedWidget.addWidget(self.history_view)
         self.tabWidget.setTabsClosable(True)
         self.new_pushButton.setProperty('class', 'SmallBtn')
         self.tabWidget.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -91,16 +96,24 @@ class WorkspaceFrame(Ui_Form, QWidget):
     def init_slot(self):
         self.new_pushButton.clicked.connect(self.new_request)
         self.tabWidget.tabCloseRequested.connect(self.tab_close)
+        self.workspace_listWidget.clicked.connect(self.change_left)
+
+    def change_left(self):
+        self.workspace_stackedWidget.setCurrentIndex(self.workspace_listWidget.currentRow())
 
     def tab_close(self, idx):
         self.tabWidget.removeTab(idx)
 
     def new_request(self):
         if self.tabWidget.count() >= int(self.config.read_config('base', 'max_tab')):
-            self.hb = ErrorHintDialog(parent=self.parent, msg=f'TAB最多不能超过{self.config.read_config("base", "max_tab")},'
+            self.hb = ErrorHintDialog(parent=self.parent, msg=f'TAB数量不能超过{self.config.read_config("base", "max_tab")}个,'
                                                               f'如需要开启更多请前往设置进行配置!')
             return
+        if self.history_view.finished:
+            print(self.history_view.data)
 
         widget = ApiView()
+        self.tabWidget.setElideMode(True)
         self.tabWidget.addTab(widget, 'Untitled Request')
+        self.tabWidget.setTabToolTip(self.tabWidget.count()-1, 'Untitled Request')
         self.tabWidget.setCurrentWidget(widget)

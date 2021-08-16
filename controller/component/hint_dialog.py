@@ -19,6 +19,7 @@ class HintBase(QWidget, Ui_Form):
         super(HintBase, self).__init__()
         self.setupUi(self)
         self.parent = parent
+        self.setWindowModality(Qt.ApplicationModal)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.center()
         self.oldPos = self.pos()

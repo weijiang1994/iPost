@@ -24,6 +24,7 @@ from threading import Thread
 from PyQt5.QtCore import pyqtSignal
 import traceback
 from utils.request import RequestSession
+from utils.models import db, History
 
 
 class ApiView(Ui_Form, QWidget):
@@ -80,9 +81,10 @@ class ApiView(Ui_Form, QWidget):
         self.request_done.connect(self.render_result)
         self.api_url_lineEdit.returnPressed.connect(self.send)
         self.res_save_pushButton.clicked.connect(self.save_resp)
+        self.request_done.connect(self.save_history)
 
     def save_resp(self):
-        name = QFileDialog.getSaveFileName(self, 'Save Response', 'response.'+self.resp_suffix,
+        name = QFileDialog.getSaveFileName(self, 'Save Response', 'response.' + self.resp_suffix,
                                            filter='"All files (*.*);;html (*.html);;json (*.json)"')
         try:
             if name[0] != '' and self.content:
@@ -134,7 +136,8 @@ class ApiView(Ui_Form, QWidget):
             # 显示请求的相关信息
             self.code_label.setText(str(list_data[1].status_code))
             self.code_label.setStyleSheet(f"color:{HTTP_CODE_COLOR.get(list_data[1].status_code)}")
-            self.time_label.setText(display_level(list_data[1].elapsed.microseconds, 1000, labels=['us', 'ms', 's'], level=3))
+            self.time_label.setText(
+                display_level(list_data[1].elapsed.microseconds, 1000, labels=['us', 'ms', 's'], level=3))
             self.time_label.setStyleSheet(f"color: {HTTP_CODE_COLOR.get(200)}")
             body_size = display_level(int(list_data[1].headers.get('Content-Length', 0)), 1024, labels=['b', 'kb', 'm'],
                                       level=3)
@@ -208,7 +211,7 @@ class ApiView(Ui_Form, QWidget):
                   'verify': self.request_set_view.ssl}
 
         res = self.req_session.send_request(method, **kwargs)
-        self.request_done.emit([res.get('result'), res.get('response'), res.get('error_msg')])
+        self.request_done.emit([res.get('result'), res.get('response'), res.get('error_msg'), api_url, headers])
 
     def choose_item(self, tag):
         if tag == 'params':
@@ -242,6 +245,11 @@ class ApiView(Ui_Form, QWidget):
         elif tag == 'r_cookies':
             update_btn_stylesheet(self.res_buttons, index=1)
             self.res_stackedWidget.setCurrentIndex(1)
+
+    def save_history(self, list_data):
+        history = History(url=list_data[3], headers=str(list_data[-1]))
+        db.session.add(history)
+        db.session.commit()
 
 
 if __name__ == '__main__':

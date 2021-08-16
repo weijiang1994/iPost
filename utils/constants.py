@@ -10,7 +10,7 @@
 from utils.common import basedir
 import enum
 
-BASE_CONFIG_PATH = basedir + '/resources/conf/base.ini'
+BASE_CONFIG_PATH = basedir + '/resources/conf/config.ini'
 VSS_DARK_THEME_PATH = basedir + '/resources/vss-dark.qss'
 MATERIAL_THEME_PATH = basedir + '/resources/material.qss'
 HEADER_ITEMS = ['Accept-Encoding', 'Accept-Charset', 'Accept-Language', 'Access-Control-Request-Headers',
