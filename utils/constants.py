@@ -10,7 +10,7 @@
 from utils.common import basedir
 import enum
 
-BASE_CONFIG_PATH = basedir + '/resources/conf/base.ini'
+BASE_CONFIG_PATH = basedir + '/resources/conf/config.ini'
 VSS_DARK_THEME_PATH = basedir + '/resources/vss-dark.qss'
 MATERIAL_THEME_PATH = basedir + '/resources/material.qss'
 HEADER_ITEMS = ['Accept-Encoding', 'Accept-Charset', 'Accept-Language', 'Access-Control-Request-Headers',
@@ -38,8 +38,31 @@ class Icon(enum.Enum):
     COOKIES = basedir + '/resources/images/cookies.png'
     TOGGLE_ON = basedir + '/resources/images/toggle-on.png'
     TOGGLE_OFF = basedir + '/resources/images/toggle-off.png'
+    INFO_ICON = basedir + '/resources/images/info.png'
+    ERR_ICON = basedir + '/resources/images/error.png'
+    SUC_ICON = basedir + '/resources/images/success.png'
 
 
 LEVELBG = {'success': '#28B62C', 'info': '#75CAEB', 'danger': '#FF4136', 'warning': '#FF851B'}
 
 LEVELBDBG = {'success': '#28B62C', 'info': '#75CAEB', 'danger': '#FF4136', 'warning': '#FF851B'}
+
+HINTBG = {'success': '#A0D468', 'info': '#4FC1E9', 'error': '#FC6E51', 'warning': '#FFCE54'}
+
+HINT_DIALOG_BASE_ATTR = """
+QWidget{
+    background: %s;
+    color: white;
+}
+QPushButton{
+    background: %s;
+    border: none;
+    margin: 3px
+}
+QLabel[class='icon']{
+    padding: 8px;
+}
+QLabel[class='text']{
+    padding-left: 10px;
+}
+"""

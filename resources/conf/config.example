@@ -1,0 +1,7 @@
+[base]
+theme=vss-dark
+max_tab=1
+
+[preference]
+font=Microsoft YaHei
+font_size=14

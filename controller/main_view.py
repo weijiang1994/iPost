@@ -19,7 +19,7 @@ class MainView(Ui_MainWindow, QMainWindow):
         super(MainView, self).__init__()
         self.setupUi(self)
         self.label.setVisible(False)
-        self.gridLayout.addWidget(WorkspaceFrame())
+        self.gridLayout.addWidget(WorkspaceFrame(parent=self))
         self.menu.setProperty('class', 'main-menu')
         self.menu_2.setProperty('class', 'main-menu')
         self.menu_3.setProperty('class', 'main-menu')
@@ -29,7 +29,6 @@ class MainView(Ui_MainWindow, QMainWindow):
 if __name__ == '__main__':
     import sys
     from PyQt5.QtWidgets import QApplication
-    from qt_material import apply_stylesheet
     app = QApplication(sys.argv)
     win = MainView()
     win.setMinimumWidth(1287)

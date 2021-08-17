@@ -204,7 +204,7 @@ QListWidget::item:selected {
 
 QStackedWidget {
     /*border-left: 1px solid #ded6d6;*/
-    border: 1px solid #2a2a2a;
+    border: 1px solid #313030;
 }
 
 QMainWindow {
@@ -217,16 +217,16 @@ QTabBar::tab {
     border: 1px solid transparent;
     color: #f1f1f1;
     padding: 5px;
-
+    max-width: 150px;
 }
 
 QTabBar::tab:hover {
-    background-color: #1c97ea;
+    background-color: #2a2a2a;
 
 }
 
 QTabBar::tab:selected {
-    background-color: #007acc;
+    background-color: #111111;
 }
 
 QTabWidget::pane {
@@ -360,6 +360,11 @@ QWidget {
 QTreeView {
     background-color: #2d2d30;
     border-style: none;
+
+}
+
+QTreeView::item{
+    height: 35px;
 }
 
 QTreeView::item:selected {

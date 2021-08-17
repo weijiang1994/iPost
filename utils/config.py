@@ -8,10 +8,21 @@
 @Software: PyCharm
 """
 from configparser import ConfigParser
-from utils.common import Singleton, basedir
+from utils.common import basedir
+import threading
 
 
-class MyConfig(Singleton):
+class MyConfig(object):
+
+    _instance_lock = threading.Lock()
+
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(MyConfig, '_instance'):
+            with MyConfig._instance_lock:
+                if not hasattr(MyConfig, '_instance'):
+                    MyConfig._instance = object.__new__(cls)
+        return MyConfig._instance
+
     def __init__(self, path):
         super(MyConfig, self).__init__()
         self.cfg = ConfigParser()
@@ -27,4 +38,4 @@ class MyConfig(Singleton):
         self.cfg.read(path)
 
 
-config = MyConfig(path=basedir + '/resources/conf/base.ini')
+config = MyConfig(path=basedir + '/resources/conf/config.ini')

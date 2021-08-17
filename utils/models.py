@@ -17,7 +17,7 @@ db_path = basedir + '/resources/data/data.db'
 
 class DBOperator(Singleton):
     def __init__(self):
-        self.engine = create_engine(f"sqlite:///{db_path}", echo=True, future=True)
+        self.engine = create_engine(f"sqlite:///{db_path}" + "?check_same_thread=False", echo=False, future=True)
         self.Model = declarative_base()
         self.session = sessionmaker(self.engine)()
 
@@ -55,7 +55,8 @@ class Request(db.Model):
     __tablename__ = 't_request'
 
     id = Column(INTEGER, primary_key=True, autoincrement=True, nullable=False)
-    url = Column(String(512), default='', nullable=False)
+    name = Column(String(512), default='', nullable=False)
+    url = Column(TEXT, default='', nullable=False)
     headers = Column(TEXT, default='')
     query_param = Column(TEXT, default='')
     cookies = Column(TEXT, default='')
@@ -63,10 +64,33 @@ class Request(db.Model):
     c_time = Column(DATETIME, default=datetime.datetime.now)
 
     collection = relationship('Collections', back_populates='request')
+    history = relationship('History', back_populates='request')
 
 
-db.Model.metadata.create_all(db.engine, checkfirst=True)
+class History(db.Model):
+    __tablename__ = 't_history'
 
-ws = WorkSpace(name='iPost', summary='I am superman', description='Just test')
-db.session.add(ws)
-db.session.commit()
+    id = Column(INTEGER, primary_key=True, autoincrement=True, nullable=False)
+    url = Column(String(512), default='', nullable=False)
+    request_id = Column(INTEGER, ForeignKey('t_request.id'))
+    headers = Column(TEXT, default='')
+    query_param = Column(TEXT, default='')
+    c_time = Column(DATETIME, default=datetime.datetime.now)
+
+    def __init__(self, url, request_id=None, headers='', query_param=''):
+        self.url = url
+        self.request_id = request_id
+        self.headers = headers
+        self.query_param = query_param
+
+    def __repr__(self):
+        return '%s -- %s' % (self.url, str(self.c_time))
+
+    request = relationship('Request', back_populates='history')
+
+
+# db.Model.metadata.create_all(db.engine, checkfirst=True)
+#
+# ws = WorkSpace(name='iPost', summary='I am superman', description='Just test')
+# db.session.add(ws)
+# db.session.commit()
