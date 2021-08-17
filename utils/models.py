@@ -75,22 +75,29 @@ class History(db.Model):
     request_id = Column(INTEGER, ForeignKey('t_request.id'))
     headers = Column(TEXT, default='')
     query_param = Column(TEXT, default='')
+    elapsed = Column(String(128), default='')
+    status = Column(String(20), default='200')
+    size = Column(TEXT, default='')
     c_time = Column(DATETIME, default=datetime.datetime.now)
 
-    def __init__(self, url, request_id=None, headers='', query_param=''):
+    def __init__(self, url, request_id=None, headers='', query_param='', elapsed='', status=200, size=''):
         self.url = url
         self.request_id = request_id
         self.headers = headers
         self.query_param = query_param
+        self.elapsed = elapsed
+        self.status = str(status)
+        self.size = size
 
     def __repr__(self):
-        return '%s -- %s' % (self.url, str(self.c_time))
+        return '%s  %s' % (self.url, str(self.c_time))
 
     request = relationship('Request', back_populates='history')
 
 
-# db.Model.metadata.create_all(db.engine, checkfirst=True)
-#
-# ws = WorkSpace(name='iPost', summary='I am superman', description='Just test')
-# db.session.add(ws)
-# db.session.commit()
+if __name__ == '__main__':
+    db.Model.metadata.create_all(db.engine, checkfirst=True)
+
+    ws = WorkSpace(name='iPost', summary='I am superman', description='Just test')
+    db.session.add(ws)
+    db.session.commit()
