@@ -22,7 +22,7 @@ class MyTreeWidgetItem(QTreeWidgetItem):
 
 
 class HistoryView(QWidget, Ui_Form):
-    query_data_done = pyqtSignal(bool)
+    query_data_done = pyqtSignal(bool, str, list)
 
     def __init__(self):
         super(HistoryView, self).__init__()
@@ -46,16 +46,16 @@ class HistoryView(QWidget, Ui_Form):
 
     def tree_item_click(self, item, column):
         if isinstance(item, MyTreeWidgetItem):
-            print(item.id)
+            ret = db.session.query(History).filter_by(id=item.id).first()
+            self.query_data_done.emit(True, 'history', [ret])
 
     def init_data(self):
         th = threading.Thread(target=self.query_data)
         th.start()
 
-    def query_done(self):
+    def query_done(self, _, cate):
         self.finished = True
-        print(self.data)
-        if self.data:
+        if self.data and cate == 'init':
             self.hint_label.setVisible(False)
             self.history_treeWidget.setVisible(True)
             self.render_tree()
@@ -77,13 +77,14 @@ class HistoryView(QWidget, Ui_Form):
 
     def query_data(self):
         try:
-            histories = db.session.query(History).all()
+            histories = db.session.query(History).order_by(History.c_time.desc()).all()
             for history in histories:
                 day = history.c_time.strftime('%Y-%m-%d')
                 if day not in self.data.keys():
                     self.data[day] = [[history.url, history.id]]
                 else:
                     self.data[day].append([history.url, history.id])
-            self.query_data_done.emit(True)
+            self.query_data_done.emit(True, 'init', [])
         except Exception:
-            self.query_data_done.emit(False)
+            import traceback
+            self.query_data_done.emit(False, 'init', [traceback.format_exc()])

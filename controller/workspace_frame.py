@@ -28,6 +28,7 @@ class WorkspaceFrame(Ui_Form, QWidget):
         self.init_slot()
         self.config = MyConfig(path=BASE_CONFIG_PATH)
         self.parent = parent
+        self.history_tab_idx = [0, False]
 
     def init_ui(self):
         self.workspace_listWidget.setCurrentRow(0)
@@ -43,6 +44,7 @@ class WorkspaceFrame(Ui_Form, QWidget):
         self.tabWidget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tabWidget.customContextMenuRequested.connect(self.tab_menu)
         self.tabWidget.setMovable(True)
+        self.tabWidget.setElideMode(True)
 
     def tab_menu(self, pos):
         if self.tabWidget.count() <= 0:
@@ -89,7 +91,6 @@ class WorkspaceFrame(Ui_Form, QWidget):
 
         elif action == close_all:
             counts = self.tabWidget.count()
-            print(counts)
             for i in range(counts):
                 self.tabWidget.removeTab(0)
 
@@ -97,23 +98,42 @@ class WorkspaceFrame(Ui_Form, QWidget):
         self.new_pushButton.clicked.connect(self.new_request)
         self.tabWidget.tabCloseRequested.connect(self.tab_close)
         self.workspace_listWidget.clicked.connect(self.change_left)
+        self.history_view.query_data_done.connect(self.render_history)
+
+    def render_history(self, tag, cate, datas):
+        if tag and cate == 'history':
+            widget = ApiView()
+            # 如果没有点击过history
+            if self.history_tab_idx[0] == 0 and not self.history_tab_idx[1]:
+                self.tabWidget.addTab(widget, datas[0].url)
+                self.tabWidget.setCurrentWidget(widget)
+                self.history_tab_idx = [self.tabWidget.currentIndex(), True]
+            else:
+                self.tabWidget.removeTab(self.history_tab_idx[0])
+                self.tabWidget.insertTab(self.history_tab_idx[0], widget, datas[0].url)
+                self.tabWidget.setCurrentWidget(widget)
+
+            widget.api_url_lineEdit.setText(datas[0].url)
+            self.tabWidget.setTabToolTip(self.tabWidget.count() - 1, datas[0].url)
+            widget.render_resp_status(status_code=int(datas[0].status),
+                                      elapsed=int(datas[0].elapsed),
+                                      h_size=len(str(datas[0].headers)),
+                                      b_size=eval(datas[0].headers).get('Content-Length', 0))
 
     def change_left(self):
         self.workspace_stackedWidget.setCurrentIndex(self.workspace_listWidget.currentRow())
 
     def tab_close(self, idx):
         self.tabWidget.removeTab(idx)
+        if idx == self.history_tab_idx[0]:
+            self.history_tab_idx = [0, False]
 
     def new_request(self):
         if self.tabWidget.count() >= int(self.config.read_config('base', 'max_tab')):
             self.hb = ErrorHintDialog(parent=self.parent, msg=f'TAB数量不能超过{self.config.read_config("base", "max_tab")}个,'
                                                               f'如需要开启更多请前往设置进行配置!')
             return
-        if self.history_view.finished:
-            print(self.history_view.data)
-
         widget = ApiView()
-        self.tabWidget.setElideMode(True)
         self.tabWidget.addTab(widget, 'Untitled Request')
         self.tabWidget.setTabToolTip(self.tabWidget.count()-1, 'Untitled Request')
         self.tabWidget.setCurrentWidget(widget)
