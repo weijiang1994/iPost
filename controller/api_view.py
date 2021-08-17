@@ -93,7 +93,6 @@ class ApiView(Ui_Form, QWidget):
                     f.write(self.content)
                 self.show_bubble('文件保存成功!', 'success')
         except Exception:
-            print(traceback.format_exc())
             self.show_bubble('文件保存失败!', 'danger')
 
     def show_bubble(self, msg, cate='info'):
@@ -133,22 +132,16 @@ class ApiView(Ui_Form, QWidget):
             self.res_stackedWidget.insertWidget(0, self.editor)
             self.editor.setText(self.content)
 
-            # 显示请求的相关信息
-            self.code_label.setText(str(list_data[1].status_code))
-            self.code_label.setStyleSheet(f"color:{HTTP_CODE_COLOR.get(list_data[1].status_code)}")
-            self.time_label.setText(
-                display_level(list_data[1].elapsed.microseconds, 1000, labels=['us', 'ms', 's'], level=3))
-            self.time_label.setStyleSheet(f"color: {HTTP_CODE_COLOR.get(200)}")
-            body_size = display_level(int(list_data[1].headers.get('Content-Length', 0)), 1024, labels=['b', 'kb', 'm'],
-                                      level=3)
-            header_size = display_level(len(str(list_data[1].headers)), 1024, labels=['b', 'kb', 'm'], level=3)
-            size = int(list_data[1].headers.get('Content-Length', 0)) + len(str(list_data[1].headers))
-            size = display_level(size, 1024, labels=['b', 'kb', 'm'], level=3)
-            self.size_label.setText(size)
-            self.size_label.setStyleSheet(f'color: {HTTP_CODE_COLOR.get(200)}')
-            self.size_label.setToolTip(f'<p>Response Size: {size}</p>'
-                                       f'<p style="color: white;">Body Size: {body_size}</p>'
-                                       f'<p style="color: white;">Header Size: {header_size}</p>')
+            status_code = list_data[1].status_code
+            elapsed = list_data[1].elapsed.microseconds
+            b_size = list_data[1].headers.get('Content-Length', 0)
+            h_size = len(str(list_data[1].headers))
+
+            self.render_resp_status(status_code=status_code,
+                                    elapsed=elapsed,
+                                    b_size=b_size,
+                                    h_size=h_size
+                                    )
             # 显示cookies
             if list_data[1].cookies:
                 self.resp_cookie_widget = ResponseTable(
@@ -247,9 +240,31 @@ class ApiView(Ui_Form, QWidget):
             self.res_stackedWidget.setCurrentIndex(1)
 
     def save_history(self, list_data):
-        history = History(url=list_data[3], headers=str(list_data[-1]))
+        history = History(url=list_data[3],
+                          headers=str(list_data[1].headers),
+                          status=list_data[1].status_code,
+                          elapsed=list_data[1].elapsed.microseconds)
         db.session.add(history)
         db.session.commit()
+
+    def render_resp_status(self, status_code=200, elapsed='', b_size='', h_size='', size_tip=''):
+        self.code_label.setText(str(status_code))
+        self.code_label.setStyleSheet(f"color:{HTTP_CODE_COLOR.get(status_code)}")
+
+        self.time_label.setText(
+            display_level(elapsed, 1000, labels=['us', 'ms', 's'], level=3))
+        self.time_label.setStyleSheet(f"color: {HTTP_CODE_COLOR.get(200)}")
+
+        body_size = display_level(int(b_size), 1024, labels=['b', 'kb', 'm'],
+                                  level=3)
+        header_size = display_level(h_size, 1024, labels=['b', 'kb', 'm'], level=3)
+        size = int(b_size) + int(h_size)
+        size = display_level(size, 1024, labels=['b', 'kb', 'm'], level=3)
+        self.size_label.setText(size)
+        self.size_label.setStyleSheet(f'color: {HTTP_CODE_COLOR.get(200)}')
+        self.size_label.setToolTip(f'<p>Response Size: {size}</p>'
+                                   f'<p style="color: white;">Body Size: {body_size}</p>'
+                                   f'<p style="color: white;">Header Size: {header_size}</p>')
 
 
 if __name__ == '__main__':
