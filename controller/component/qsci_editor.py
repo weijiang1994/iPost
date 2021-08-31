@@ -51,8 +51,10 @@ class JSONEditor(BaseEditor):
         self.lexer.setColor(QColor('#5AB8F7'), QsciLexerJSON.Property)
         self.lexer.setColor(QColor("#99C38E"), QsciLexerJSON.Number)
         self.lexer.setColor(QColor('#C87F4F'), QsciLexerJSON.String)
-        self.lexer.setColor(QColor('#FF0000'), QsciLexerJSON.Error)
+        self.lexer.setColor(QColor('#EA4F4F'), QsciLexerJSON.Error)
         self.lexer.setColor(QColor("#FFFFFF"), QsciLexerJSON.Operator)
+        self.lexer.setColor(QColor('#C87F4F'), QsciLexerJSON.IRI)
+        self.lexer.setColor(QColor('#C87F4F'), QsciLexerJSON.IRICompact)
 
 
 class HTMLEditor(BaseEditor):

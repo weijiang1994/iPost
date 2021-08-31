@@ -17,6 +17,7 @@ from utils.constants import BASE_CONFIG_PATH, VSS_DARK_THEME_PATH, Icon
 from controller.api_view import ApiView
 from controller.component.hint_dialog import ErrorHintDialog
 from controller.component.history_view import HistoryView
+from controller.component.message import Message
 
 
 class WorkspaceFrame(Ui_Form, QWidget):
@@ -130,10 +131,13 @@ class WorkspaceFrame(Ui_Form, QWidget):
 
     def new_request(self):
         if self.tabWidget.count() >= int(self.config.read_config('base', 'max_tab')):
-            self.hb = ErrorHintDialog(parent=self.parent, msg=f'TAB数量不能超过{self.config.read_config("base", "max_tab")}个,'
-                                                              f'如需要开启更多请前往设置进行配置!')
+            self.msg = Message(parent=self.parent)
+            self.msg.error(f'TAB数量不能超过{self.config.read_config("base", "max_tab")}个,'
+                           f'如需要开启更多请前往设置进行配置!')
+            self.msg.show()
             return
+
         widget = ApiView()
         self.tabWidget.addTab(widget, 'Untitled Request')
-        self.tabWidget.setTabToolTip(self.tabWidget.count()-1, 'Untitled Request')
+        self.tabWidget.setTabToolTip(self.tabWidget.count() - 1, 'Untitled Request')
         self.tabWidget.setCurrentWidget(widget)
