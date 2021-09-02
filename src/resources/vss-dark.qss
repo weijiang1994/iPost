@@ -7,25 +7,25 @@ QMenu {
 }
 
 QCheckBox::indicator:checked {
-    image: url("../resources/images/toggle-on.png");
+    image: url("e-on.png");
     width: 25%;
     height: 25%;
 }
 
 QCheckBox::indicator:unchecked {
-    image: url("../resources/images/toggle-off.png");
+    image: url("e-off.png");
     height: 25%;
     width: 25%;
 }
 
 QCheckBox[class='set-check']::indicator:checked {
-    image: url("../resources/images/toggle-on.png");
+    image: url("e-on.png");
     width: 35%;
     height: 35%;
 }
 
 QCheckBox[class='set-check']::indicator:unchecked {
-    image: url("../resources/images/toggle-off.png");
+    image: url("e-off.png");
     height: 35%;
     width: 35%;
 }
@@ -70,12 +70,12 @@ QTabBar::tab {
 }
 
 QTabBar::close-button {
-    image: url('../resources/images/close-default.png');
+    image: url('-default.png');
     /*image:url('../resources/images/tab_close.svg');*/
 }
 
 QTabBar::close-button:hover {
-    image: url('../resources/images/close-line.svg');
+    image: url('-line.svg');
 }
 
 QMenu::item {

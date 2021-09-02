@@ -9,8 +9,8 @@ file: hint_dialog.py
 from PyQt5.QtCore import QPoint
 from PyQt5.QtWidgets import QWidget, QDesktopWidget
 from PyQt5.Qt import Qt
-from ui.component.hint_base_view import Ui_Form
-from utils.constants import HINTBG, HINT_DIALOG_BASE_ATTR, Icon
+from src.ui.component.hint_base_view import Ui_Form
+from src.utils.constants import HINTBG, HINT_DIALOG_BASE_ATTR, Icon
 from PyQt5.QtGui import QPixmap
 
 

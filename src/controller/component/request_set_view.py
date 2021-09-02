@@ -7,7 +7,7 @@
 @Desc    : request_set_view
 @Software: PyCharm
 """
-from ui.component.request_set_view import Ui_Form
+from src.ui.component.request_set_view import Ui_Form
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QIntValidator
 

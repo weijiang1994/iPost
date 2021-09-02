@@ -9,22 +9,21 @@ file: api_view.py
 from PyQt5.QtWidgets import QWidget, QMessageBox
 import sys
 from PyQt5.QtWidgets import QApplication, QFileDialog
-from ui.api_view import Ui_Form
-from utils.common import update_btn_stylesheet, display_level, \
+from src.ui.api_view import Ui_Form
+from src.utils.common import update_btn_stylesheet, display_level, \
     get_cookies_data
-from utils.constants import HTTP_CODE_COLOR, Icon
+from src.utils.constants import HTTP_CODE_COLOR, Icon
 import json
-from controller.component.table_view import HeadersTableView, ParamsTableView, ResponseTable
-from controller.component.qsci_editor import JSONEditor, HTMLEditor
-from controller.component.hint_view import HintWidget
-from controller.component.request_set_view import RequestSetView
-from controller.component.bubble import BubbleLabel
-from controller.component.request_body_view import RequestBody
+from src.controller.component.table_view import HeadersTableView, ParamsTableView, ResponseTable
+from src.controller.component.qsci_editor import JSONEditor, HTMLEditor
+from src.controller.component.hint_view import HintWidget
+from src.controller.component.request_set_view import RequestSetView
+from src.controller.component.bubble import BubbleLabel
+from src.controller.component.request_body_view import RequestBody
 from threading import Thread
 from PyQt5.QtCore import pyqtSignal
-import traceback
-from utils.request import RequestSession
-from utils.models import db, History
+from src.utils.request import RequestSession
+from src.utils.models import db, History
 
 
 class ApiView(Ui_Form, QWidget):

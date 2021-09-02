@@ -7,7 +7,7 @@
 @Desc    : constant
 @Software: PyCharm
 """
-from utils.common import basedir
+from src.utils.common import basedir
 import enum
 
 BASE_CONFIG_PATH = basedir + '/resources/conf/config.ini'

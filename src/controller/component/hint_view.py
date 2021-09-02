@@ -7,11 +7,9 @@
 @Desc    : hint_view
 @Software: PyCharm
 """
-from ui.component.hint_view import Ui_Form
-from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QSpacerItem, QSizePolicy, QVBoxLayout
-from PyQt5 import QtGui, QtCore
-from PyQt5.Qt import Qt
-from utils.constants import Icon
+from src.ui.component.hint_view import Ui_Form
+from PyQt5.QtWidgets import QWidget, QGridLayout, QVBoxLayout
+from PyQt5 import QtGui
 
 
 class HintWidget(QWidget, Ui_Form):
