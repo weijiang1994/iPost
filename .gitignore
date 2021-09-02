@@ -7,7 +7,7 @@ samples/
 # C extensions
 *.so
 
-resources/conf/config.ini
+src/resources/conf/config.ini
 # Distribution / packaging
 .Python
 build/

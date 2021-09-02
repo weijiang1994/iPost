@@ -9,10 +9,9 @@
 """
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QTreeWidgetItem
-from ui.component.history_view import Ui_Form
-from utils.models import db, History
+from src.ui.component.history_view import Ui_Form
+from src.utils.models import db, History
 import threading
-import datetime
 
 
 class MyTreeWidgetItem(QTreeWidgetItem):

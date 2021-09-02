@@ -7,17 +7,16 @@
 @Desc    : workspace_frame
 @Software: PyCharm
 """
-from ui.workspace_view import Ui_Form
-from PyQt5.QtWidgets import QWidget, QMessageBox, QMenu, QAction, QTabBar, QTreeWidget
+from src.ui.workspace_view import Ui_Form
+from PyQt5.QtWidgets import QWidget, QMenu, QAction
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
-from utils.common import read_qss
-from utils.config import MyConfig
-from utils.constants import BASE_CONFIG_PATH, VSS_DARK_THEME_PATH, Icon
-from controller.api_view import ApiView
-from controller.component.hint_dialog import ErrorHintDialog
-from controller.component.history_view import HistoryView
-from controller.component.message import Message
+from src.utils.common import read_qss
+from src.utils.config import MyConfig
+from src.utils.constants import BASE_CONFIG_PATH, VSS_DARK_THEME_PATH, Icon
+from src.controller.api_view import ApiView
+from src.controller.component.history_view import HistoryView
+from src.controller.component.message import Message
 
 
 class WorkspaceFrame(Ui_Form, QWidget):

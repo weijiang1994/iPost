@@ -7,9 +7,9 @@ file: request_body_view.py
 @desc:
 """
 from PyQt5.QtWidgets import QWidget
-from ui.component.request_body_view import Ui_Form
-from controller.component.message import Message
-from controller.component.hint_view import HintWidget
+from src.ui.component.request_body_view import Ui_Form
+from src.controller.component.message import Message
+from src.controller.component.hint_view import HintWidget
 
 
 class RequestBody(Ui_Form, QWidget):

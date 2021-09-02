@@ -7,13 +7,12 @@
 @Desc    : Bubble
 @Software: PyCharm
 """
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
 from PyQt5.QtGui import QPainter, QPainterPath, QColor, QPen
 from PyQt5.QtCore import (QRectF, Qt, QPropertyAnimation, pyqtProperty,
                           QPoint, QParallelAnimationGroup, QEasingCurve)
 from PyQt5.QtWidgets import (QLabel, QWidget, QVBoxLayout, QApplication,
                              QLineEdit, QPushButton)
-from utils.constants import LEVELBG, LEVELBDBG
+from src.utils.constants import LEVELBG
 
 
 class BubbleLabel(QWidget):

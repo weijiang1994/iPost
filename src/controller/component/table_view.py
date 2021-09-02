@@ -7,17 +7,15 @@
 @Desc    : table_view
 @Software: PyCharm
 """
-from ui.component.query_params_view import Ui_Form
-from utils.constants import HEADER_ITEMS, Icon, VSS_DARK_THEME_PATH
-from utils.common import read_qss
-from PyQt5.QtWidgets import QWidget, QHeaderView, QTableView, QTableWidgetItem, QCheckBox, QTableWidget, QLineEdit, \
+from src.ui.component.query_params_view import Ui_Form
+from src.utils.constants import HEADER_ITEMS, Icon, VSS_DARK_THEME_PATH
+from src.utils.common import read_qss
+from PyQt5.QtWidgets import QWidget, QTableWidgetItem, QTableWidget, QLineEdit, \
     QCompleter, QMenu, QAction
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QBrush, QIcon
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import (QApplication, QHeaderView, QStyle, QStyleOptionButton, QTableView)
-from PyQt5.QtCore import (pyqtSignal, Qt, QAbstractTableModel, QModelIndex, QRect, QVariant)
+from PyQt5.QtWidgets import (QApplication, QHeaderView)
+from PyQt5.QtCore import (Qt)
 
 completer = QCompleter(HEADER_ITEMS)
 completer.setFilterMode(Qt.MatchContains)

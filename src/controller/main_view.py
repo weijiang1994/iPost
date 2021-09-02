@@ -8,10 +8,10 @@
 @Software: PyCharm
 """
 from PyQt5.QtWidgets import QMainWindow
-from ui.main_window import Ui_MainWindow
-from controller.workspace_frame import WorkspaceFrame
-from utils.common import read_qss, basedir
-from utils.constants import VSS_DARK_THEME_PATH
+from src.ui.main_window import Ui_MainWindow
+from src.controller.workspace_frame import WorkspaceFrame
+from src.utils.common import read_qss
+from src.utils.constants import VSS_DARK_THEME_PATH
 
 
 class MainView(Ui_MainWindow, QMainWindow):

@@ -7,7 +7,7 @@
 @Desc    : models
 @Software: PyCharm
 """
-from utils.common import Singleton, basedir
+from src.utils.common import Singleton, basedir
 from sqlalchemy import create_engine, Column, String, INTEGER, TEXT, DATETIME, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 import datetime

@@ -8,7 +8,7 @@
 @Software: PyCharm
 """
 from configparser import ConfigParser
-from utils.common import basedir
+from src.utils.common import basedir
 import threading
 
 

@@ -8,8 +8,6 @@ file: qsci_editor.py
 """
 from PyQt5.Qsci import QsciLexerJSON, QsciScintilla, QsciLexerHTML
 from PyQt5.QtGui import QColor, QFont
-from utils.constants import VSS_DARK_THEME_PATH
-from utils.common import read_qss
 
 
 class BaseEditor(QsciScintilla):

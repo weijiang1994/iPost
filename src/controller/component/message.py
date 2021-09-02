@@ -41,8 +41,6 @@ class Message(QtWidgets.QWidget):
 
     def center(self):
         qr = self.frameGeometry()
-        print(self.geometry())
-        print(qr)
         if not self.parent:
             cp = QDesktopWidget().availableGeometry().center()
             qr.moveCenter(cp)
