@@ -133,7 +133,7 @@ class ApiView(Ui_Form, QWidget):
 
             status_code = list_data[1].status_code
             elapsed = list_data[1].elapsed.microseconds
-            b_size = list_data[1].headers.get('Content-Length', 0)
+            b_size = list_data[1].headers.get('Content-Length', 0) or len(list_data[1].content)
             h_size = len(str(list_data[1].headers))
 
             self.render_resp_status(status_code=status_code,
