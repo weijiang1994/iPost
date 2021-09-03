@@ -24,6 +24,8 @@ from threading import Thread
 from PyQt5.QtCore import pyqtSignal
 from src.utils.request import RequestSession
 from src.utils.models import db, History
+import requests
+from typing import Optional
 
 
 class ApiView(Ui_Form, QWidget):
@@ -83,6 +85,9 @@ class ApiView(Ui_Form, QWidget):
         self.request_done.connect(self.save_history)
 
     def save_resp(self):
+        """
+        将响应数据保存为文件
+        """
         name = QFileDialog.getSaveFileName(self, 'Save Response', 'response.' + self.resp_suffix,
                                            filter='"All files (*.*);;html (*.html);;json (*.json)"')
         try:
@@ -94,7 +99,16 @@ class ApiView(Ui_Form, QWidget):
         except Exception:
             self.show_bubble('文件保存失败!', 'danger')
 
-    def show_bubble(self, msg, cate='info'):
+    def show_bubble(
+            self, 
+            msg: str, 
+            cate: str = 'info'
+    ):
+        """
+        显示提示气泡框
+        :param msg: 提示信息内容
+        :param cate: 提示类别
+        """
         if hasattr(self, "_blabel"):
             self._blabel.stop()
             self._blabel.deleteLater()
@@ -103,7 +117,14 @@ class ApiView(Ui_Form, QWidget):
         self._blabel.setText(msg)
         self._blabel.show()
 
-    def render_result(self, list_data):
+    def render_result(
+            self,
+            list_data: requests.Response
+    ):
+        """
+        将响应数据渲染到对应的控件上
+        :param list_data: 响应数据
+        """
         self.send_pushButton.setText('Send')
         self.send_pushButton.setEnabled(True)
         self.res_stackedWidget.removeWidget(self.editor)
@@ -117,7 +138,7 @@ class ApiView(Ui_Form, QWidget):
             self.editor.clear()
 
         if list_data[0]:
-            # 获取相应的内容类型, 渲染对应的editor
+            # 获取数据类型,不同类型实例化不同的编辑器
             resp_type = list_data[1].headers.get('Content-Type', 'html')
             if resp_type.__contains__('html'):
                 self.editor = HTMLEditor()
@@ -141,7 +162,7 @@ class ApiView(Ui_Form, QWidget):
                                     b_size=b_size,
                                     h_size=h_size
                                     )
-            # 显示cookies
+            # 显示响应cookies数据
             if list_data[1].cookies:
                 self.resp_cookie_widget = ResponseTable(
                     headers=['Name', 'Value', 'Domain', 'Path', 'Expires', 'HttpOnly', 'Secure'])
@@ -153,7 +174,7 @@ class ApiView(Ui_Form, QWidget):
                                                      detail='Find all your cookies and their associated domains here.')
                 self.res_stackedWidget.addWidget(self.resp_cookie_widget)
 
-            # 显示响应headers
+            # 显示相应headers数据
             if list_data[1].headers:
                 self.resp_header_widget = ResponseTable()
                 self.resp_header_widget.render_data(list_data[1].headers)
@@ -174,6 +195,10 @@ class ApiView(Ui_Form, QWidget):
             self.size_label.setStyleSheet(f"color: red")
 
     def send(self):
+        """
+        发送请求
+        :return: None
+        """
         api_url = self.api_url_lineEdit.text()
         if api_url == '' or api_url is None:
             QMessageBox.warning(self, '错误', 'URL地址不能为空!')
@@ -190,7 +215,18 @@ class ApiView(Ui_Form, QWidget):
         th.setDaemon(True)
         th.start()
 
-    def send_request(self, api_url, method='GET', headers=None):
+    def send_request(
+            self,
+            api_url: str,
+            method: str = 'GET',
+            headers: Optional[dict] = None
+    ):
+        """
+        时间发送请求方法
+        :param api_url: 请求路径
+        :param method: 请求方法
+        :param headers: 请求头
+        """
         self.req_session.set_url(api_url)
         self.req_session.max_redirects = int(self.request_set_view.max_redirect_lineEdit.text())
         conn_timeout = self.request_set_view.conn_timeout_lineEdit.text()
@@ -205,7 +241,14 @@ class ApiView(Ui_Form, QWidget):
         res = self.req_session.send_request(method, **kwargs)
         self.request_done.emit([res.get('result'), res.get('response'), res.get('error_msg'), api_url, headers])
 
-    def choose_item(self, tag):
+    def choose_item(
+            self,
+            tag: str
+    ):
+        """
+        切换请求body页面
+        :param tag: 页面tag
+        """
         if tag == 'params':
             update_btn_stylesheet(self.buttons, index=0)
             self.api_stackedWidget.setCurrentIndex(0)
@@ -238,7 +281,14 @@ class ApiView(Ui_Form, QWidget):
             update_btn_stylesheet(self.res_buttons, index=1)
             self.res_stackedWidget.setCurrentIndex(1)
 
-    def save_history(self, list_data):
+    def save_history(
+            self,
+            list_data: requests.Response
+    ):
+        """
+        将请求历史记录保存到数据库
+        :param list_data: 响应数据
+        """
         history = History(url=list_data[3],
                           headers=str(list_data[1].headers),
                           status=list_data[1].status_code,
@@ -246,7 +296,20 @@ class ApiView(Ui_Form, QWidget):
         db.session.add(history)
         db.session.commit()
 
-    def render_resp_status(self, status_code=200, elapsed='', b_size='', h_size='', size_tip=''):
+    def render_resp_status(
+            self,
+            status_code: int = 200,
+            elapsed: str = '',
+            b_size: str = '',
+            h_size: str = ''
+    ):
+        """
+        渲染响应状态到对应的控件
+        :param status_code: 响应码
+        :param elapsed: 请求所消耗时间
+        :param b_size: body 大小
+        :param h_size: header 大小
+        """
         self.code_label.setText(str(status_code))
         self.code_label.setStyleSheet(f"color:{HTTP_CODE_COLOR.get(status_code)}")
 
