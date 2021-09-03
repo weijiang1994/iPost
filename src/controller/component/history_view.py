@@ -8,10 +8,11 @@
 @Software: PyCharm
 """
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget, QTreeWidgetItem
+from PyQt5.QtWidgets import QWidget, QTreeWidgetItem, QTreeWidgetItemIterator
 from src.ui.component.history_view import Ui_Form
 from src.utils.models import db, History
 import threading
+import datetime
 
 
 class MyTreeWidgetItem(QTreeWidgetItem):
@@ -29,6 +30,7 @@ class HistoryView(QWidget, Ui_Form):
         self.finished = False
         self.data = {}
         self.root_list = []
+        self.today = str(datetime.date.today())
         self.init_data()
         self.init_slot()
         self.init_ui()
@@ -58,6 +60,7 @@ class HistoryView(QWidget, Ui_Form):
             self.hint_label.setVisible(False)
             self.history_treeWidget.setVisible(True)
             self.render_tree()
+            self.insert_new_history()
         else:
             self.hint_label.setText('No History Data')
 
@@ -74,6 +77,19 @@ class HistoryView(QWidget, Ui_Form):
                 root.addChild(child)
         self.history_treeWidget.insertTopLevelItems(0, self.root_list)
 
+    def insert_new_history(self):
+        iterator = QTreeWidgetItemIterator(self.history_treeWidget)
+        while iterator.value():
+            item = iterator.value()
+            columnCount = item.columnCount()
+            for i in range(columnCount):
+                text = item.text(i)
+                if i == columnCount - 1:
+                    print(text)
+                else:
+                    print(text, end=' ')
+            iterator.__iadd__(1)
+
     def query_data(self):
         try:
             histories = db.session.query(History).order_by(History.c_time.desc()).all()
@@ -87,3 +103,12 @@ class HistoryView(QWidget, Ui_Form):
         except Exception:
             import traceback
             self.query_data_done.emit(False, 'init', [traceback.format_exc()])
+
+
+if __name__ == '__main__':
+    from PyQt5.QtWidgets import QApplication
+    import sys
+    app = QApplication(sys.argv)
+    win = HistoryView()
+    win.show()
+    sys.exit(app.exec_())
