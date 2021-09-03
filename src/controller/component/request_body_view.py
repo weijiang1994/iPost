@@ -27,11 +27,17 @@ class RequestBody(Ui_Form, QWidget):
         self.binary_radioButton.clicked.connect(lambda: self.change_page(3))
 
     def change_page(self, idx):
+        self.raw_cate_comboBox.setVisible(False)
+        if idx == 2:
+            self.raw_cate_comboBox.setVisible(True)
+
         self.body_stackedWidget.setCurrentIndex(idx)
 
     def init_ui(self):
         self.body_stackedWidget.removeWidget(self.page)
         self.body_stackedWidget.removeWidget(self.page_2)
+        self.raw_cate_comboBox.setVisible(False)
+        self.raw_cate_comboBox.setStyleSheet('color: #5e79fd')
         m1 = Message()
         self.body_stackedWidget.addWidget(HintWidget(msg='This request does not have a body.'))
         self.body_stackedWidget.addWidget(m1)
