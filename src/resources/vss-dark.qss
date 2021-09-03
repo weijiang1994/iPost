@@ -70,13 +70,13 @@ QTabBar::tab {
 }
 
 QTabBar::close-button {
-    image: url('-default.png');
+    image: url('../resources/images/close-default.png');
     /*image:url('../resources/images/tab_close.svg');*/
 }
 
-QTabBar::close-button:hover {
-    image: url('-line.svg');
-}
+/*QTabBar::close-button:hover {*/
+/*    image: url('close-line.svg');*/
+/*}*/
 
 QMenu::item {
     background-color: transparent;
