@@ -249,25 +249,76 @@ QDockWidget::title {
 }
 
 QComboBox {
-    border-style: none;
-    background-color: #333337;
-    color: #b2b2b2;
-    min-width: 75px;
-    height: 35px;
+    color: #5e79fd;
+    background-color: #232629;
+    border-radius: 0px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    height: 36px;
 }
 
-QComboBox:on {
-    background-color: #3f3f46;
+QComboBox:disabled {
+    color: rgba(29, 233, 182, 0.2);
+    background-color: rgba(35, 38, 41, 0.75);
+    border-bottom: 2px solid rgba(29, 233, 182, 0.2);
 }
 
-QComboBox:down-arrow {
-    border-style: none;
-    border-left: 1px solid #007acc;
+QComboBox::drop-down {
+    border: none;
+    color: #1de9b6;
+    width: 20px;
 }
 
-QComboBox:drop-down {
-    border-style: none;
+QComboBox::down-arrow {
+    image: url(../resources/images/downarrow.svg);
+    margin-right: 10px;
 }
+
+QComboBox::down-arrow:disabled {
+    image: url(icon:/disabled/downarrow.svg);
+    margin-right: 10px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #232629;
+    border: 2px solid #81b2e8;
+}
+
+QComboBox[frame='false'] {
+    color: #1de9b6;
+    background-color: transparent;
+    border: 1px solid transparent;
+}
+
+QComboBox[frame='false']:disabled {
+    color: rgba(29, 233, 182, 0.2);
+}
+
+QComboBox::item {
+    color: white;
+    height: 36px;
+}
+
+/*QComboBox {*/
+/*    border-style: none;*/
+/*    background-color: #333337;*/
+/*    color: #b2b2b2;*/
+/*    min-width: 75px;*/
+/*    height: 35px;*/
+/*}*/
+
+/*QComboBox:on {*/
+/*    background-color: #3f3f46;*/
+/*}*/
+
+/*QComboBox:down-arrow {*/
+/*    border-style: none;*/
+/*    border-left: 1px solid #007acc;*/
+/*}*/
+
+/*QComboBox:drop-down {*/
+/*    border-style: none;*/
+/*}*/
 
 /*Needs fix*/
 QScrollBar {
@@ -363,11 +414,11 @@ QTreeView {
 
 }
 
-QTreeView::item{
+QTreeView::item {
     height: 35px;
 }
 
-QTreeView::item:selected!active {
+QTreeView::item:selected! active {
     background: #3f3f46;
 }
 
@@ -375,6 +426,7 @@ QTreeView::item:selected {
     background: #3f3f46;
 }
 
-QTreeView::indicator, QTreeView::item:indicator{
+QTreeView::indicator, QTreeView::item:indicator {
     background: none;
 }
+
