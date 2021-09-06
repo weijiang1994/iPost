@@ -46,7 +46,13 @@ class HistoryView(QWidget, Ui_Form):
         self.history_treeWidget.itemClicked.connect(self.tree_item_click)
 
     def tree_item_click(self, item, column):
-        if isinstance(item, MyTreeWidgetItem):
+        if isinstance(item, QTreeWidgetItem):
+            if not self.history_treeWidget.currentItem().isExpanded():
+                self.history_treeWidget.expandItem(self.history_treeWidget.currentItem())
+            else:
+                self.history_treeWidget.collapseItem(self.history_treeWidget.currentItem())
+
+        elif isinstance(item, MyTreeWidgetItem):
             ret = db.session.query(History).filter_by(id=item.id).first()
             self.query_data_done.emit(True, 'history', [ret])
 
