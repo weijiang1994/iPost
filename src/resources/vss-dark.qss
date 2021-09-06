@@ -417,6 +417,7 @@ QTreeView {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
+
 QTreeView{
   border-radius: 4px;
   padding: 5px;
@@ -438,37 +439,24 @@ QTreeView::item:selected {
 }
 
 QTreeView::item:selected:focus{
-  background-color: #111111;
-  selection-background-color: #111111;
-  color: #ffffff;
-  selection-color: #ffffff; /* For Windows */
+      background-color: #111111;
+      selection-background-color: #111111;
+      color: #ffffff;
+      selection-color: #ffffff; /* For Windows */
 }
 
 QTreeView::branch{
-  background-color: #282828;
+    background-color: #282828;
 }
 
 QTreeView::branch:closed:has-children:has-siblings,
 QTreeView::branch:closed:has-children:!has-siblings {
-  image: url(../resources/images/branch-closed.svg);
+    image: url(../resources/images/branch-closed.png);
 }
 
 QTreeView::branch:open:has-children:!has-siblings,
 QTreeView::branch:open:has-children:has-siblings {
-  image: url(../resources/images/branch-open.svg);
-}
-
-QTreeView::branch:has-siblings:!adjoins-item {
-  border-image: url(../resources/images/vline.svg) 0;
-}
-
-QTreeView::branch:has-siblings:adjoins-item {
-    border-image: url(../resources/images/branch-more.svg) 0;
-}
-
-QTreeView::branch:!has-children:!has-siblings:adjoins-item,
-QTreeView::branch:has-children:!has-siblings:adjoins-item {
-    border-image: url(../resources/images/branch-end.svg) 0;
+    image: url(../resources/images/branch-open.png);
 }
 
 QTreeView QHeaderView::section {
