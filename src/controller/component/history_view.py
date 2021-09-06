@@ -77,18 +77,18 @@ class HistoryView(QWidget, Ui_Form):
                 root.addChild(child)
         self.history_treeWidget.insertTopLevelItems(0, self.root_list)
 
-    def insert_new_history(self):
-        iterator = QTreeWidgetItemIterator(self.history_treeWidget)
-        while iterator.value():
-            item = iterator.value()
-            columnCount = item.columnCount()
-            for i in range(columnCount):
-                text = item.text(i)
-                if i == columnCount - 1:
-                    print(text)
-                else:
-                    print(text, end=' ')
-            iterator.__iadd__(1)
+    def insert_new_history(self, new_request: list):
+        if self.root_list[0].text(0) != self.today:
+            root = QTreeWidgetItem()
+            root.setText(0, self.today)
+            self.root_list.insert(0, root)
+            self.history_treeWidget.insertTopLevelItems(0, [root])
+        first_root = self.root_list[0]
+        child = MyTreeWidgetItem()
+        child.setToolTip(0, new_request[0])
+        child.setText(0, new_request[0])
+        child.id = new_request[1]
+        first_root.addChild(child)
 
     def query_data(self):
         try:
@@ -108,6 +108,7 @@ class HistoryView(QWidget, Ui_Form):
 if __name__ == '__main__':
     from PyQt5.QtWidgets import QApplication
     import sys
+
     app = QApplication(sys.argv)
     win = HistoryView()
     win.show()
