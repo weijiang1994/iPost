@@ -102,7 +102,7 @@ class WorkspaceFrame(Ui_Form, QWidget):
 
     def render_history(self, tag, cate, datas):
         if tag and cate == 'history':
-            widget = ApiView()
+            widget = ApiView(p_widget=self)
             # 如果没有点击过history
             if self.history_tab_idx[0] == 0 and not self.history_tab_idx[1]:
                 self.tabWidget.addTab(widget, datas[0].url)
@@ -136,7 +136,7 @@ class WorkspaceFrame(Ui_Form, QWidget):
             self.msg.show()
             return
 
-        widget = ApiView()
+        widget = ApiView(p_widget=self)
         self.tabWidget.addTab(widget, 'Untitled Request')
         self.tabWidget.setTabToolTip(self.tabWidget.count() - 1, 'Untitled Request')
         self.tabWidget.setCurrentWidget(widget)

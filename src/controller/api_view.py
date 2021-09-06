@@ -31,9 +31,13 @@ from typing import Optional
 class ApiView(Ui_Form, QWidget):
     request_done = pyqtSignal(list)
 
-    def __init__(self):
+    def __init__(
+            self,
+            p_widget: Optional[QWidget] = None
+    ):
         super(ApiView, self).__init__()
         self.setupUi(self)
+        self.p_widget = p_widget
         self.params_tw = ParamsTableView()
         self.headers_tw = HeadersTableView()
         self.editor = JSONEditor()
@@ -100,8 +104,8 @@ class ApiView(Ui_Form, QWidget):
             self.show_bubble('文件保存失败!', 'danger')
 
     def show_bubble(
-            self, 
-            msg: str, 
+            self,
+            msg: str,
             cate: str = 'info'
     ):
         """
@@ -283,7 +287,7 @@ class ApiView(Ui_Form, QWidget):
 
     def save_history(
             self,
-            list_data: requests.Response
+            list_data: list
     ):
         """
         将请求历史记录保存到数据库
@@ -295,6 +299,9 @@ class ApiView(Ui_Form, QWidget):
                           elapsed=list_data[1].elapsed.microseconds)
         db.session.add(history)
         db.session.commit()
+        from src.controller.workspace_frame import WorkspaceFrame
+        self.p_widget: WorkspaceFrame
+        self.p_widget.history_view.insert_new_history([list_data[3], history.id])
 
     def render_resp_status(
             self,

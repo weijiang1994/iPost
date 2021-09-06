@@ -60,7 +60,6 @@ class HistoryView(QWidget, Ui_Form):
             self.hint_label.setVisible(False)
             self.history_treeWidget.setVisible(True)
             self.render_tree()
-            self.insert_new_history()
         else:
             self.hint_label.setText('No History Data')
 
@@ -88,7 +87,7 @@ class HistoryView(QWidget, Ui_Form):
         child.setToolTip(0, new_request[0])
         child.setText(0, new_request[0])
         child.id = new_request[1]
-        first_root.addChild(child)
+        first_root.insertChild(0, child)
 
     def query_data(self):
         try:
