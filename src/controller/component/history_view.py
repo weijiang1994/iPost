@@ -8,10 +8,11 @@
 @Software: PyCharm
 """
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget, QTreeWidgetItem
+from PyQt5.QtWidgets import QWidget, QTreeWidgetItem, QTreeWidgetItemIterator
 from src.ui.component.history_view import Ui_Form
 from src.utils.models import db, History
 import threading
+import datetime
 
 
 class MyTreeWidgetItem(QTreeWidgetItem):
@@ -29,6 +30,7 @@ class HistoryView(QWidget, Ui_Form):
         self.finished = False
         self.data = {}
         self.root_list = []
+        self.today = str(datetime.date.today())
         self.init_data()
         self.init_slot()
         self.init_ui()
@@ -44,7 +46,13 @@ class HistoryView(QWidget, Ui_Form):
         self.history_treeWidget.itemClicked.connect(self.tree_item_click)
 
     def tree_item_click(self, item, column):
-        if isinstance(item, MyTreeWidgetItem):
+        if isinstance(item, QTreeWidgetItem):
+            if not self.history_treeWidget.currentItem().isExpanded():
+                self.history_treeWidget.expandItem(self.history_treeWidget.currentItem())
+            else:
+                self.history_treeWidget.collapseItem(self.history_treeWidget.currentItem())
+
+        elif isinstance(item, MyTreeWidgetItem):
             ret = db.session.query(History).filter_by(id=item.id).first()
             self.query_data_done.emit(True, 'history', [ret])
 
@@ -74,6 +82,19 @@ class HistoryView(QWidget, Ui_Form):
                 root.addChild(child)
         self.history_treeWidget.insertTopLevelItems(0, self.root_list)
 
+    def insert_new_history(self, new_request: list):
+        if self.root_list[0].text(0) != self.today:
+            root = QTreeWidgetItem()
+            root.setText(0, self.today)
+            self.root_list.insert(0, root)
+            self.history_treeWidget.insertTopLevelItems(0, [root])
+        first_root = self.root_list[0]
+        child = MyTreeWidgetItem()
+        child.setToolTip(0, new_request[0])
+        child.setText(0, new_request[0])
+        child.id = new_request[1]
+        first_root.insertChild(0, child)
+
     def query_data(self):
         try:
             histories = db.session.query(History).order_by(History.c_time.desc()).all()
@@ -87,3 +108,13 @@ class HistoryView(QWidget, Ui_Form):
         except Exception:
             import traceback
             self.query_data_done.emit(False, 'init', [traceback.format_exc()])
+
+
+if __name__ == '__main__':
+    from PyQt5.QtWidgets import QApplication
+    import sys
+
+    app = QApplication(sys.argv)
+    win = HistoryView()
+    win.show()
+    sys.exit(app.exec_())
