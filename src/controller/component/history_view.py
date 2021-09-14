@@ -52,7 +52,7 @@ class HistoryView(QWidget, Ui_Form):
             else:
                 self.history_treeWidget.collapseItem(self.history_treeWidget.currentItem())
 
-        elif isinstance(item, MyTreeWidgetItem):
+        if isinstance(item, MyTreeWidgetItem):
             ret = db.session.query(History).filter_by(id=item.id).first()
             self.query_data_done.emit(True, 'history', [ret])
 
