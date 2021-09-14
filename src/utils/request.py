@@ -8,6 +8,7 @@
 @Software: PyCharm
 """
 from requests import Session
+import requests
 import traceback
 
 
@@ -25,18 +26,12 @@ class RequestSession(Session):
     def send_request(self, method='GET', **kwargs):
         self._res = None
         try:
-            # if method.upper() == 'GET':
-            #     self._res = self.get(self._url, **kwargs)
-            # elif method.upper() == 'PUT':
-            #     self._res = self.put(self._url, **kwargs)
-            # elif method.upper() == 'DELETE':
-            #     self._res = self.delete(self._url, **kwargs)
-            # elif method.upper() == 'POST':
-            #     self._res = self.post(self._url, **kwargs)
             self._res = self.request(url=self._url, method=method, **kwargs)
             return {'result': True, 'response': self._res, 'error_msg': ''}
-        except Exception:
-            return {'result': False, 'response': self._res, 'error_msg': str(traceback.format_exc())}
+        except requests.exceptions.ConnectionError:
+            return {'result': False, 'response': self._res, 'error_msg': '连接错误,请确认URL地址是否正确!'}
+        except Exception as e:
+            return {'result': False, 'response': self._res, 'error_msg': f'虽然不知道发生了什么,但是就是出错了!\n错误信息:{str(e.args)}'}
 
 
 if __name__ == '__main__':
