@@ -133,6 +133,13 @@ class ApiView(Ui_Form, QWidget):
         self.send_pushButton.setEnabled(True)
         self.res_stackedWidget.removeWidget(self.editor)
 
+        if list_data[2]:
+            self.editor = JSONEditor()
+            self.res_stackedWidget.insertWidget(0, self.editor)
+            self.res_stackedWidget.setCurrentIndex(0)
+            self.editor.setText(list_data[2])
+            return
+
         # 如果不为空则说明已经请求过则先清理
         if self.resp_cookie_widget is not None:
             self.res_stackedWidget.removeWidget(self.resp_cookie_widget)
@@ -293,6 +300,8 @@ class ApiView(Ui_Form, QWidget):
         将请求历史记录保存到数据库
         :param list_data: 响应数据
         """
+        if list_data[2]:
+            return
         history = History(url=list_data[3],
                           headers=str(list_data[1].headers),
                           status=list_data[1].status_code,

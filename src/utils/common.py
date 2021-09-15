@@ -71,7 +71,7 @@ def display_level(number: int or float, base: int, labels: list, level: int, rou
     :param labels: 数值单位
     :param level: 显示等级
     :return: render level
-    >>> file1 = 1023 # filesize is 1589b
+    >>> file1 = 1023 # filesize is 1023b
     >>> display_level(file1, base=1024, labels=['b', 'kb', 'm'], level=3)
     >>> '1023b'
     >>> file2 = 4589 # filesize is 4589
