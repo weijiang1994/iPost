@@ -6,7 +6,8 @@ file: qsci_editor.py
 @time: 2021/8/2 22:16
 @desc:
 """
-from PyQt5.Qsci import QsciLexerJSON, QsciScintilla, QsciLexerHTML, QsciLexerJavaScript, QsciLexerXML
+from PyQt5.Qsci import QsciLexerJSON, QsciScintilla, QsciLexerHTML, QsciLexerJavaScript, QsciLexerXML, \
+    QsciLexerCustom, QsciLexerTeX
 from PyQt5.QtGui import QColor, QFont
 
 
@@ -105,7 +106,7 @@ class JavaScriptEditor(BaseEditor):
 class XMLEditor(BaseEditor):
     def __init__(self):
         super(XMLEditor, self).__init__()
-        self.lexer = QsciLexerXML()
+        self.lexer = QsciLexerXML(self)
         self.lexer.setFont(self.font)
         self.setLexer(self.lexer)
         self.lexer.setDefaultPaper(QColor('#2D2D30'))
@@ -118,6 +119,22 @@ class XMLEditor(BaseEditor):
         self.lexer.setColor(QColor('#FFFFFF'), QsciLexerXML.PythonOperator)
         self.lexer.setColor(QColor('#4594B4'), QsciLexerXML.XMLTagEnd)
         self.lexer.setColor(QColor('#88C4E2'), QsciLexerXML.Attribute)
+
+
+class TextEditor(BaseEditor):
+    def __init__(self):
+        super(TextEditor, self).__init__()
+        self.lexer = QsciLexerTeX(self)
+        self.lexer.setFont(self.font)
+        self.setLexer(self.lexer)
+        self.lexer.setDefaultPaper(QColor('#2D2D30'))
+        self.lexer.setPaper(QColor('#2D2D30'))
+        self.lexer.setColor(QColor('#FFFFFF'), QsciLexerTeX.Command)
+        self.lexer.setColor(QColor('#FFFFFF'), QsciLexerTeX.Default)
+        self.lexer.setColor(QColor('#FFFFFF'), QsciLexerTeX.Group)
+        self.lexer.setColor(QColor('#FFFFFF'), QsciLexerTeX.Special)
+        self.lexer.setColor(QColor('#FFFFFF'), QsciLexerTeX.Symbol)
+        self.lexer.setColor(QColor('#FFFFFF'), QsciLexerTeX.Text)
 
 
 if __name__ == '__main__':
