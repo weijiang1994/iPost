@@ -9,10 +9,17 @@ file: request_body_view.py
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QColor
 from src.ui.component.request_body_view import Ui_Form
+from src.ui.component import body_binary_view
 from src.controller.component.message import Message
 from src.controller.component.hint_view import HintWidget
 from src.controller.component.qsci_editor import TextEditor, JSONEditor, XMLEditor, HTMLEditor, JavaScriptEditor
 from PyQt5.Qsci import QsciScintilla
+
+
+class BodyBinary(QWidget, body_binary_view.Ui_Form):
+    def __init__(self):
+        super(BodyBinary, self).__init__()
+        self.setupUi(self)
 
 
 class RequestBody(Ui_Form, QWidget):
@@ -65,7 +72,7 @@ class RequestBody(Ui_Form, QWidget):
         self.body_stackedWidget.addWidget(HintWidget(msg='This request does not have a body.'))
         self.body_stackedWidget.addWidget(QWidget())
         self.body_stackedWidget.addWidget(self.raw_editor)
-        self.body_stackedWidget.addWidget(QWidget())
+        self.body_stackedWidget.addWidget(BodyBinary())
         self.none_radioButton.setChecked(True)
 
 
