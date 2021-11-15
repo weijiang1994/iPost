@@ -8,6 +8,7 @@ samples/
 *.so
 
 src/resources/conf/config.ini
+src/resources/data/data.db
 # Distribution / packaging
 .Python
 build/
