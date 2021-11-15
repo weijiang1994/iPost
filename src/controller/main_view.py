@@ -7,10 +7,11 @@
 @Desc    : main_view
 @Software: PyCharm
 """
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow
 from src.ui.main_window import Ui_MainWindow
 from src.controller.workspace_frame import WorkspaceFrame
-from src.utils.common import read_qss
+from src.utils.common import read_qss, base_dir
 from src.utils.constants import VSS_DARK_THEME_PATH
 
 
@@ -32,6 +33,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     win = MainView()
     win.setMinimumWidth(1287)
+    win.setWindowIcon(QIcon(base_dir + '/resources/images/logo.png'))
     win.setStyleSheet(read_qss(VSS_DARK_THEME_PATH))
     win.setWindowTitle('iPost Version 1.0.14 Beta')
     win.show()

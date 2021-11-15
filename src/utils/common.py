@@ -8,6 +8,8 @@
 @Software: PyCharm
 """
 import os
+from os.path import dirname, abspath
+
 from PyQt5.QtGui import QCursor
 from PyQt5.QtCore import Qt
 from configparser import SafeConfigParser
@@ -94,3 +96,6 @@ def get_cookies_data(cookies):
              c.secure]
         ret.append(a)
     return ret
+
+
+base_dir = dirname(dirname(abspath(__file__)))
