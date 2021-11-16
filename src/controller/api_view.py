@@ -71,7 +71,7 @@ class ApiView(Ui_Form, QWidget):
         self.send_pushButton.setProperty('class', 'Postman')
         self.api_url_lineEdit.setProperty('class', 'ApiUrl')
         self.res_stackedWidget.addWidget(self.editor)
-        self.api_url_lineEdit.setText('https://2dogz.cn/api/get-soul?counts=10')
+        self.api_url_lineEdit.setText('https://2dogz.cn/api/get-soul')
 
     def init_slot(self):
         self.send_pushButton.clicked.connect(self.send)
@@ -215,14 +215,23 @@ class ApiView(Ui_Form, QWidget):
             QMessageBox.warning(self, '错误', 'URL地址不能为空!')
             return
         header_data = {}
+        params = {}
         method = self.comboBox.currentText()
+
+        # 获取请求头
         for row in range(self.headers_tw.tableWidget.rowCount()):
             if row not in self.headers_tw.unselect_row:
                 header_data[self.headers_tw.tableWidget.cellWidget(row, 0).text()] = \
                     self.headers_tw.tableWidget.item(row, 1).text()
+
+        # 获取请求查询参数
+        for row in range(self.params_tw.tableWidget.rowCount()):
+            if self.params_tw.tableWidget.item(row, 0) and self.params_tw.tableWidget.item(row, 1):
+                params[self.params_tw.tableWidget.item(row, 0).text()] = self.params_tw.tableWidget.item(row, 1).text()
+
         self.send_pushButton.setText('Sending')
         self.send_pushButton.setEnabled(False)
-        th = Thread(target=self.send_request, args=(api_url, method, header_data))
+        th = Thread(target=self.send_request, args=(api_url, method, header_data, params))
         th.setDaemon(True)
         th.start()
 
@@ -230,10 +239,12 @@ class ApiView(Ui_Form, QWidget):
             self,
             api_url: str,
             method: str = 'GET',
-            headers: Optional[dict] = None
+            headers: Optional[dict] = None,
+            params: Optional[dict] = None
     ):
         """
         时间发送请求方法
+        :param params: 查询参数
         :param api_url: 请求路径
         :param method: 请求方法
         :param headers: 请求头
@@ -243,11 +254,14 @@ class ApiView(Ui_Form, QWidget):
         conn_timeout = self.request_set_view.conn_timeout_lineEdit.text()
         read_timeout = self.request_set_view.read_timeout_lineEdit.text()
 
-        kwargs = {'headers': headers,
-                  'timeout': (int(conn_timeout) if conn_timeout != '' else None,
-                              int(read_timeout) if read_timeout != '' else None),
-                  'allow_redirects': self.request_set_view.redirect,
-                  'verify': self.request_set_view.ssl}
+        kwargs = {
+            'headers': headers,
+            'timeout': (int(conn_timeout) if conn_timeout != '' else None,
+                        int(read_timeout) if read_timeout != '' else None),
+            'allow_redirects': self.request_set_view.redirect,
+            'verify': self.request_set_view.ssl,
+            'params': params
+        }
 
         res = self.req_session.send_request(method, **kwargs)
         self.request_done.emit([res.get('result'), res.get('response'), res.get('error_msg'), api_url, headers])

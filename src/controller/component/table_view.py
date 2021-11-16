@@ -23,7 +23,7 @@ completer.setCompletionMode(QCompleter.PopupCompletion)
 
 
 class TableWidget(QTableWidget):
-    def __init__(self):
+    def __init__(self, first_le=True):
         super(TableWidget, self).__init__()
         self.verticalHeader().setVisible(False)
         self.setColumnCount(3)
@@ -31,16 +31,18 @@ class TableWidget(QTableWidget):
         self.setColumnWidth(0, 10)
         self.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.AnyKeyPressed)
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.first_le = first_le
 
     def closeEditor(self, editor, hint):
         if hint == QtWidgets.QAbstractItemDelegate.EditNextItem:
             current = self.currentIndex()
             if current.row() == self.rowCount() - 1 and current.column() == self.columnCount() - 1:
                 self.insertRow(self.rowCount())
-                qle = QLineEdit('')
-                qle.setStyleSheet('border: none')
-                qle.setCompleter(completer)
-                self.setCellWidget(self.rowCount() - 1, 0, qle)
+                if self.first_le:
+                    qle = QLineEdit('')
+                    qle.setStyleSheet('border: none')
+                    qle.setCompleter(completer)
+                    self.setCellWidget(self.rowCount() - 1, 0, qle)
         super().closeEditor(editor, hint)
 
 
@@ -55,6 +57,9 @@ class BaseTableView(Ui_Form, QWidget):
         self.label.setText('Query')
         self.checkBox.setText('Description')
 
+    def set_tw(self, value=True):
+        self.tableWidget.first_le = value
+
     def set_desc(self):
         if self.checkBox.isChecked():
             self.tableWidget.setColumnHidden(2, False)
@@ -65,6 +70,27 @@ class BaseTableView(Ui_Form, QWidget):
 class ParamsTableView(BaseTableView):
     def __init__(self):
         super(ParamsTableView, self).__init__()
+        self.tableWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tableWidget.customContextMenuRequested.connect(self.item_menu)
+        self.label.setText('Parameters')
+        self.set_tw(False)
+
+    def item_menu(self, pos):
+        menu = QMenu()
+        menu.setStyleSheet(read_qss(VSS_DARK_THEME_PATH))
+        menu.setProperty('class', 'sub-menu')
+        new = QAction('New Parameter')
+        new.setIcon(QIcon(Icon.ADD_LINE_ICON.value))
+        delete = QAction('Delete Parameter')
+        delete.setIcon(QIcon(Icon.SUBTRACT_LINE.value))
+        menu.addAction(new)
+        menu.addAction(delete)
+        action = menu.exec_(self.tableWidget.mapToGlobal(pos))
+        if action == delete:
+            self.tableWidget.removeRow(self.tableWidget.currentRow())
+
+        if action == new:
+            self.tableWidget.insertRow(self.tableWidget.rowCount())
 
 
 class HeadersTableView(BaseTableView):
