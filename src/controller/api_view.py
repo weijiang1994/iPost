@@ -208,7 +208,7 @@ class ApiView(Ui_Form, QWidget):
     def send(self):
         """
         发送请求
-        :return: None
+        :return: 当请求地址为空的时候返回None
         """
         api_url = self.api_url_lineEdit.text()
         if api_url == '' or api_url is None:
