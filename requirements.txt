@@ -10,3 +10,5 @@ QScintilla==2.13.1
 requests==2.26.0
 SQLAlchemy==1.4.27
 urllib3==1.26.7
+
+Flask~=2.0.2
