@@ -216,8 +216,8 @@ class ApiView(Ui_Form, QWidget):
             return
         header_data = {}
         params = {}
+        json_data = ''
         method = self.comboBox.currentText()
-
         # 获取请求头
         for row in range(self.headers_tw.tableWidget.rowCount()):
             if row not in self.headers_tw.unselect_row:
@@ -229,9 +229,12 @@ class ApiView(Ui_Form, QWidget):
             if self.params_tw.tableWidget.item(row, 0) and self.params_tw.tableWidget.item(row, 1):
                 params[self.params_tw.tableWidget.item(row, 0).text()] = self.params_tw.tableWidget.item(row, 1).text()
 
+        if self.request_body_view.body_type == 2:
+            json_data = self.request_body_view.raw_editor.text()
+
         self.send_pushButton.setText('Sending')
         self.send_pushButton.setEnabled(False)
-        th = Thread(target=self.send_request, args=(api_url, method, header_data, params))
+        th = Thread(target=self.send_request, args=(api_url, method, header_data, params, json_data))
         th.setDaemon(True)
         th.start()
 
@@ -240,10 +243,12 @@ class ApiView(Ui_Form, QWidget):
             api_url: str,
             method: str = 'GET',
             headers: Optional[dict] = None,
-            params: Optional[dict] = None
+            params: Optional[dict] = None,
+            json_data: Optional[dict] = None
     ):
         """
         时间发送请求方法
+        :param json_data: json数据(json/text/javascript/html/xml)
         :param params: 查询参数
         :param api_url: 请求路径
         :param method: 请求方法
@@ -260,7 +265,8 @@ class ApiView(Ui_Form, QWidget):
                         int(read_timeout) if read_timeout != '' else None),
             'allow_redirects': self.request_set_view.redirect,
             'verify': self.request_set_view.ssl,
-            'params': params
+            'params': params,
+            'json': json_data
         }
 
         res = self.req_session.send_request(method, **kwargs)
