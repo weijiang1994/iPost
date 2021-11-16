@@ -96,6 +96,3 @@ def get_cookies_data(cookies):
              c.secure]
         ret.append(a)
     return ret
-
-
-base_dir = dirname(dirname(abspath(__file__)))

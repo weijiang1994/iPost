@@ -41,6 +41,7 @@ class Icon(enum.Enum):
     INFO_ICON = basedir + '/resources/images/info.png'
     ERR_ICON = basedir + '/resources/images/error.png'
     SUC_ICON = basedir + '/resources/images/success.png'
+    DELETE_ICON = basedir + '/resources/images/delete.png'
 
 
 LEVELBG = {'success': '#28B62C', 'info': '#75CAEB', 'danger': '#FF4136', 'warning': '#FF851B'}
