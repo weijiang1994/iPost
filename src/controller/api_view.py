@@ -11,7 +11,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QFileDialog
 from src.ui.api_view import Ui_Form
 from src.utils.common import update_btn_stylesheet, display_level, \
-    get_cookies_data
+    get_cookies_data, track_except
 from src.utils.constants import HTTP_CODE_COLOR, Icon
 import json
 from src.controller.component.table_view import HeadersTableView, ParamsTableView, ResponseTable
@@ -121,6 +121,7 @@ class ApiView(Ui_Form, QWidget):
         self._blabel.setText(msg)
         self._blabel.show()
 
+    @track_except
     def render_result(
             self,
             list_data: requests.Response
@@ -312,6 +313,7 @@ class ApiView(Ui_Form, QWidget):
             update_btn_stylesheet(self.res_buttons, index=1)
             self.res_stackedWidget.setCurrentIndex(1)
 
+    @track_except
     def save_history(
             self,
             list_data: list

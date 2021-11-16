@@ -96,3 +96,15 @@ def get_cookies_data(cookies):
              c.secure]
         ret.append(a)
     return ret
+
+
+def track_except(func):
+    def wrapper(*args, **kwargs):
+        try:
+            ret = func(*args, **kwargs)
+            return ret
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+    return wrapper
+
