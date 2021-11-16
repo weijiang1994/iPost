@@ -6,8 +6,7 @@ file: qsci_editor.py
 @time: 2021/8/2 22:16
 @desc:
 """
-from PyQt5.Qsci import QsciLexerJSON, QsciScintilla, QsciLexerHTML, QsciLexerJavaScript, QsciLexerXML, \
-    QsciLexerCustom, QsciLexerTeX
+from PyQt5.Qsci import QsciLexerJSON, QsciScintilla, QsciLexerHTML, QsciLexerJavaScript, QsciLexerXML, QsciLexerTeX
 from PyQt5.QtGui import QColor, QFont
 
 

@@ -33,7 +33,7 @@ class RequestBody(Ui_Form, QWidget):
         self.json_editor = JSONEditor()
         self.html_editor = HTMLEditor()
         self.xml_editor = XMLEditor()
-
+        self.body_type = 0
         self.lexers = {
             0: self.raw_editor.lexer,
             1: self.js_editor.lexer,
@@ -49,6 +49,10 @@ class RequestBody(Ui_Form, QWidget):
         self.raw_radioButton.clicked.connect(lambda: self.change_page(2))
         self.binary_radioButton.clicked.connect(lambda: self.change_page(3))
         self.raw_cate_comboBox.currentIndexChanged.connect(self.set_lexer)
+        self.body_stackedWidget.currentChanged.connect(self.data_type)
+
+    def data_type(self):
+        self.body_type = self.body_stackedWidget.currentIndex()
 
     def set_lexer(self, index):
         self.raw_editor.setLexer(self.lexers.get(index))

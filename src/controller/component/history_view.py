@@ -7,9 +7,12 @@
 @Desc    : history_view
 @Software: PyCharm
 """
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget, QTreeWidgetItem, QTreeWidgetItemIterator
+from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QWidget, QTreeWidgetItem, QTreeWidgetItemIterator, QMenu, QAction
 from src.ui.component.history_view import Ui_Form
+from src.utils.common import read_qss
+from src.utils.constants import VSS_DARK_THEME_PATH, Icon
 from src.utils.models import db, History
 import threading
 import datetime
@@ -34,6 +37,52 @@ class HistoryView(QWidget, Ui_Form):
         self.init_data()
         self.init_slot()
         self.init_ui()
+        self.history_treeWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.history_treeWidget.customContextMenuRequested.connect(self.item_menu)
+
+    def item_menu(self, pos):
+        """
+        删除历史记录menu
+        :param pos: menu 显示位置
+        :return: 历史记录不存在item，不执行显示menu
+        """
+        if len(self.history_treeWidget.children()) <= 0:
+            return
+
+        menu = QMenu()
+        menu.setStyleSheet(read_qss(VSS_DARK_THEME_PATH))
+        menu.setProperty('class', 'sub-menu')
+        if not self.history_treeWidget.currentItem().parent():
+            delete_cur = QAction('Del All Data Of Current Item')
+            delete_cur.setObjectName('del_cur_all')
+            delete_cur.setIcon(QIcon(Icon.DELETE_ICON.value))
+
+        if self.history_treeWidget.currentItem().parent():
+            delete_cur = QAction('Del Current Data')
+            delete_cur.setObjectName('del_cur')
+            delete_cur.setIcon(QIcon(Icon.DELETE_ICON.value))
+
+        menu.addAction(delete_cur)
+
+        action = menu.exec_(self.history_treeWidget.mapToGlobal(pos))
+
+        if action == delete_cur and action.objectName() == 'del_cur':
+            # 删除当前item以及从数据库中删除数据
+            db.session.query(History).filter_by(id=self.history_treeWidget.currentItem().id).delete()
+            self.history_treeWidget.currentItem().parent().removeChild(self.history_treeWidget.currentItem())
+
+        elif action == delete_cur and action.objectName() == 'del_cur_all':
+            # 删除当前item下面的所有子item
+            ids = []
+            parent = self.history_treeWidget.currentItem()
+            for child in range(parent.childCount()):
+                ids.append(parent.child(0).id)
+                parent.removeChild(parent.child(0))
+
+            # 删除所有子item的数据
+            db.session.query(History).filter(History.id.in_(ids)).delete()
+
+        db.session.commit()
 
     def init_ui(self):
         self.hint_label.setText('Loading Data...')
