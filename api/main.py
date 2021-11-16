@@ -30,10 +30,13 @@ def test_headers():
 
 @app.route('/test-json', methods=['POST'])
 def test_json():
-    print(request.json)
-    print(request.form)
-    print(request.values)
-    print(request.cookies)
+    print('json is ', request.json)
+    print('form is ', request.form)
+    print('value is ', request.values)
+    print('cookie is ', request.cookies)
+    print('args is ', request.args)
+    print('data is ', request.data)
+    print(request.get_data())
     return request.json if request.json else {'code': '500', 'msg': 'Not send json data.'}
 
 
