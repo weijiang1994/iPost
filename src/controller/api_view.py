@@ -6,7 +6,7 @@ file: api_view.py
 @time: 2021/7/18 20:51
 @desc:
 """
-from PyQt5.QtWidgets import QWidget, QMessageBox
+from PyQt5.QtWidgets import QWidget, QMessageBox, QScrollArea
 import sys
 from PyQt5.QtWidgets import QApplication, QFileDialog
 from src.ui.api_view import Ui_Form
@@ -40,9 +40,12 @@ class ApiView(Ui_Form, QWidget):
         self.p_widget = p_widget
         self.params_tw = ParamsTableView()
         self.headers_tw = HeadersTableView()
+        self.set_view = QScrollArea()
         self.editor = JSONEditor()
         self.request_set_view = RequestSetView()
         self.request_body_view = RequestBody()
+        self.set_view.setWidget(self.request_set_view)
+
         self.x_position = 0
         self.y_position = 0
         self.init_slot()
@@ -67,7 +70,7 @@ class ApiView(Ui_Form, QWidget):
         self.api_stackedWidget.addWidget(self.headers_tw)
         self.api_stackedWidget.addWidget(self.request_body_view)
         self.api_stackedWidget.addWidget(QWidget())
-        self.api_stackedWidget.addWidget(self.request_set_view)
+        self.api_stackedWidget.addWidget(self.set_view)
         self.send_pushButton.setProperty('class', 'Postman')
         self.api_url_lineEdit.setProperty('class', 'ApiUrl')
         self.res_stackedWidget.addWidget(self.editor)
