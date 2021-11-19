@@ -46,6 +46,7 @@ class ApiView(Ui_Form, QWidget):
         self.request_body_view = RequestBody()
         self.set_view.setWidget(self.request_set_view)
 
+        self.binary_file_data = None
         self.x_position = 0
         self.y_position = 0
         self.init_slot()
@@ -133,6 +134,9 @@ class ApiView(Ui_Form, QWidget):
         将响应数据渲染到对应的控件上
         :param list_data: 响应数据
         """
+        if self.binary_file_data:
+            self.binary_file_data.close()
+
         self.send_pushButton.setText('Send')
         self.send_pushButton.setEnabled(True)
         self.res_stackedWidget.removeWidget(self.editor)
@@ -251,6 +255,9 @@ class ApiView(Ui_Form, QWidget):
             elif cb_text == 'XML':
                 data = self.request_body_view.raw_editor.text()
                 header_data['Content-Type'] = 'application/xml'
+        elif self.request_body_view.body_type == 3 and self.request_body_view.body_binary.file_path:
+            self.binary_file_data = open(self.request_body_view.body_binary.file_path, 'rb')
+            data = self.binary_file_data
 
         self.send_pushButton.setText('Sending')
         self.send_pushButton.setEnabled(False)
