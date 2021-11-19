@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'body_binary_view.ui'
+# Form implementation generated from reading ui file '/home/jiangwei/python/pyqt5-project/iPost/src/ui/component/body_binary_view.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -15,24 +15,35 @@ class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(400, 300)
-        self.widget = QtWidgets.QWidget(Form)
-        self.widget.setGeometry(QtCore.QRect(0, 10, 171, 84))
-        self.widget.setObjectName("widget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout = QtWidgets.QGridLayout(Form)
+        self.gridLayout.setObjectName("gridLayout")
+        self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
-        self.add_file_pushButton = QtWidgets.QPushButton(self.widget)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.add_file_pushButton = QtWidgets.QPushButton(Form)
         self.add_file_pushButton.setObjectName("add_file_pushButton")
-        self.verticalLayout.addWidget(self.add_file_pushButton)
+        self.horizontalLayout_2.addWidget(self.add_file_pushButton)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_2.addItem(spacerItem)
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.filename_label = QtWidgets.QLabel(self.widget)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem1)
+        self.filename_label = QtWidgets.QLabel(Form)
         self.filename_label.setObjectName("filename_label")
         self.horizontalLayout.addWidget(self.filename_label)
-        self.add_file_pushButton_2 = QtWidgets.QPushButton(self.widget)
-        self.add_file_pushButton_2.setObjectName("add_file_pushButton_2")
-        self.horizontalLayout.addWidget(self.add_file_pushButton_2)
+        self.delete_file_pushButton = QtWidgets.QPushButton(Form)
+        self.delete_file_pushButton.setText("")
+        self.delete_file_pushButton.setObjectName("delete_file_pushButton")
+        self.horizontalLayout.addWidget(self.delete_file_pushButton)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem2)
         self.verticalLayout.addLayout(self.horizontalLayout)
+        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem3)
+        self.gridLayout.addLayout(self.verticalLayout, 0, 0, 1, 1)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -42,4 +53,3 @@ class Ui_Form(object):
         Form.setWindowTitle(_translate("Form", "Form"))
         self.add_file_pushButton.setText(_translate("Form", "Select File"))
         self.filename_label.setText(_translate("Form", "TextLabel"))
-        self.add_file_pushButton_2.setText(_translate("Form", "Select File"))
