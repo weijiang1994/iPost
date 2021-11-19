@@ -6,7 +6,7 @@ file: api_view.py
 @time: 2021/7/18 20:51
 @desc:
 """
-from PyQt5.QtWidgets import QWidget, QMessageBox
+from PyQt5.QtWidgets import QWidget, QMessageBox, QScrollArea
 import sys
 from PyQt5.QtWidgets import QApplication, QFileDialog
 from src.ui.api_view import Ui_Form
@@ -40,9 +40,13 @@ class ApiView(Ui_Form, QWidget):
         self.p_widget = p_widget
         self.params_tw = ParamsTableView()
         self.headers_tw = HeadersTableView()
+        self.set_view = QScrollArea()
         self.editor = JSONEditor()
         self.request_set_view = RequestSetView()
         self.request_body_view = RequestBody()
+        self.set_view.setWidget(self.request_set_view)
+
+        self.binary_file_data = None
         self.x_position = 0
         self.y_position = 0
         self.init_slot()
@@ -67,7 +71,7 @@ class ApiView(Ui_Form, QWidget):
         self.api_stackedWidget.addWidget(self.headers_tw)
         self.api_stackedWidget.addWidget(self.request_body_view)
         self.api_stackedWidget.addWidget(QWidget())
-        self.api_stackedWidget.addWidget(self.request_set_view)
+        self.api_stackedWidget.addWidget(self.set_view)
         self.send_pushButton.setProperty('class', 'Postman')
         self.api_url_lineEdit.setProperty('class', 'ApiUrl')
         self.res_stackedWidget.addWidget(self.editor)
@@ -130,6 +134,9 @@ class ApiView(Ui_Form, QWidget):
         将响应数据渲染到对应的控件上
         :param list_data: 响应数据
         """
+        if self.binary_file_data:
+            self.binary_file_data.close()
+
         self.send_pushButton.setText('Send')
         self.send_pushButton.setEnabled(True)
         self.res_stackedWidget.removeWidget(self.editor)
@@ -217,7 +224,8 @@ class ApiView(Ui_Form, QWidget):
             return
         header_data = {}
         params = {}
-        json_data = ''
+        json_data = {}
+        data = ''
         method = self.comboBox.currentText()
         # 获取请求头
         for row in range(self.headers_tw.tableWidget.rowCount()):
@@ -231,11 +239,34 @@ class ApiView(Ui_Form, QWidget):
                 params[self.params_tw.tableWidget.item(row, 0).text()] = self.params_tw.tableWidget.item(row, 1).text()
 
         if self.request_body_view.body_type == 2:
-            json_data = self.request_body_view.raw_editor.text()
+            cb_text = self.request_body_view.raw_cate_comboBox.currentText()
+            if cb_text == 'JSON':
+                json_data = self.request_body_view.raw_editor.text()
+                header_data['Content-Type'] = 'application/json'
+            elif cb_text == 'Text':
+                data = self.request_body_view.raw_editor.text()
+                header_data['Content-Type'] = 'text/plain'
+            elif cb_text == 'JavaScript':
+                data = self.request_body_view.raw_editor.text()
+                header_data['Content-Type'] = 'application/javascript'
+            elif cb_text == 'HTML':
+                data = self.request_body_view.raw_editor.text()
+                header_data['Content-Type'] = 'text/html'
+            elif cb_text == 'XML':
+                data = self.request_body_view.raw_editor.text()
+                header_data['Content-Type'] = 'application/xml'
+        elif self.request_body_view.body_type == 3 and self.request_body_view.body_binary.file_path:
+            self.binary_file_data = open(self.request_body_view.body_binary.file_path, 'rb')
+            data = self.binary_file_data
 
         self.send_pushButton.setText('Sending')
         self.send_pushButton.setEnabled(False)
-        th = Thread(target=self.send_request, args=(api_url, method, header_data, params, json_data))
+        th = Thread(target=self.send_request, args=(api_url,
+                                                    method,
+                                                    header_data,
+                                                    params,
+                                                    json_data,
+                                                    data))
         th.setDaemon(True)
         th.start()
 
@@ -245,11 +276,13 @@ class ApiView(Ui_Form, QWidget):
             method: str = 'GET',
             headers: Optional[dict] = None,
             params: Optional[dict] = None,
-            json_data: Optional[dict] = None
+            json_data: Optional[dict] = None,
+            data: Optional[str] = None,
     ):
         """
         时间发送请求方法
-        :param json_data: json数据(json/text/javascript/html/xml)
+        :param data: 请求数据(requests中的data位置参数)
+        :param json_data: json数据(requests中的json位置参数)
         :param params: 查询参数
         :param api_url: 请求路径
         :param method: 请求方法
@@ -267,7 +300,8 @@ class ApiView(Ui_Form, QWidget):
             'allow_redirects': self.request_set_view.redirect,
             'verify': self.request_set_view.ssl,
             'params': params,
-            'json': json_data
+            'json': json_data,
+            'data': data
         }
 
         res = self.req_session.send_request(method, **kwargs)

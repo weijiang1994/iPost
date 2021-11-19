@@ -40,6 +40,7 @@ QLineEdit[class='set-lineedit'] {
     max-width: 40px;
 }
 
+
 QToolTip {
     background-color: #363636;
     color: white;
@@ -351,6 +352,36 @@ QPushButton::pressed {
     border: 1px solid #007acc;
     background: #3e3e42;
 
+}
+
+QPushButton[class="flat"]{
+    border-style:none;
+    padding:8px;
+    border-radius:5px;
+    color:#FFFFFF;
+    background:#34495E;
+    max-height: 10px;
+    font-size: 12px;
+    min-width: 150px;
+}
+
+QPushButton:hover[class="flat"]{
+    color:#F0F0F0;
+    background:#4E6D8C;
+}
+
+QPushButton:pressed[class="flat"]{
+    color:#B8C6D1;
+    background:#2D3E50;
+    border: none;
+}
+
+QPushButton[class="no-border"]{
+    border:none;
+}
+
+QPushButton:pressed[class="no-border"]{
+    border:none;
 }
 
 QToolButton {

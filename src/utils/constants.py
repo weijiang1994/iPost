@@ -24,6 +24,14 @@ TABLE_ITEM_SELECT_BGCOLOR = {'vs-dark': '#2D2D30'}
 
 HTTP_CODE_COLOR = {200: 'green', 400: 'red', 404: 'red', 403: 'red', 405: 'red', 500: 'red', 308: 'red'}
 
+FILE_CONTENT_TYPE = {
+    'pdf': 'application/pdf',
+    'jpg': 'application/jpeg',
+    'html': 'text/html',
+    'json': 'application/json',
+
+}
+
 
 class Icon(enum.Enum):
     ADD_LINE_ICON = basedir + '/resources/images/add-line.png'

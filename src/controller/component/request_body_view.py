@@ -6,7 +6,7 @@ file: request_body_view.py
 @time: 2021/8/14 18:51
 @desc:
 """
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QFileDialog
 from PyQt5.QtGui import QColor
 from src.ui.component.request_body_view import Ui_Form
 from src.ui.component import body_binary_view
@@ -14,12 +14,32 @@ from src.controller.component.message import Message
 from src.controller.component.hint_view import HintWidget
 from src.controller.component.qsci_editor import TextEditor, JSONEditor, XMLEditor, HTMLEditor, JavaScriptEditor
 from PyQt5.Qsci import QsciScintilla
+import qtawesome as qta
+import os
 
 
 class BodyBinary(QWidget, body_binary_view.Ui_Form):
     def __init__(self):
         super(BodyBinary, self).__init__()
         self.setupUi(self)
+        self.filename_label.setText('Please Select a File')
+        self.add_file_pushButton.setProperty("class", 'flat')
+        self.delete_file_pushButton.setProperty('class', 'no-border')
+        self.delete_file_pushButton.setIcon(qta.icon('ei.remove', color='white', scale_factor=0.5))
+        self.file_path = ''
+        self.add_file_pushButton.clicked.connect(self.select_file)
+        self.delete_file_pushButton.clicked.connect(self.delete_file)
+
+    def select_file(self):
+        filename, filetype = QFileDialog.getOpenFileName(self, 'Select File', '', "All Files(*);;Text Files(*.txt)")
+        if filename:
+            self.file_path = filename
+            self.filename_label.setText(os.path.basename(filename))
+
+    def delete_file(self):
+        if self.file_path:
+            self.file_path = ''
+            self.filename_label.setText('Please Select a File')
 
 
 class RequestBody(Ui_Form, QWidget):
@@ -33,6 +53,7 @@ class RequestBody(Ui_Form, QWidget):
         self.json_editor = JSONEditor()
         self.html_editor = HTMLEditor()
         self.xml_editor = XMLEditor()
+        self.body_binary = BodyBinary()
         self.body_type = 0
         self.lexers = {
             0: self.raw_editor.lexer,
@@ -76,7 +97,7 @@ class RequestBody(Ui_Form, QWidget):
         self.body_stackedWidget.addWidget(HintWidget(msg='This request does not have a body.'))
         self.body_stackedWidget.addWidget(QWidget())
         self.body_stackedWidget.addWidget(self.raw_editor)
-        self.body_stackedWidget.addWidget(BodyBinary())
+        self.body_stackedWidget.addWidget(self.body_binary)
         self.none_radioButton.setChecked(True)
 
 

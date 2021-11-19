@@ -17,6 +17,7 @@ from src.utils.constants import BASE_CONFIG_PATH, VSS_DARK_THEME_PATH, Icon
 from src.controller.api_view import ApiView
 from src.controller.component.history_view import HistoryView
 from src.controller.component.message import Message
+import qtawesome as qta
 
 
 class WorkspaceFrame(Ui_Form, QWidget):
@@ -58,11 +59,11 @@ class WorkspaceFrame(Ui_Form, QWidget):
         close_other = QAction('Close Other Tabs')
         close_all = QAction('Close All Tabs')
         save_cur = QAction('Save Tab')
-        close_cur.setIcon(QIcon(Icon.LOCATION.value))
-        close_right.setIcon(QIcon(Icon.ALIGN_RIGHT.value))
-        close_left.setIcon(QIcon(Icon.ALIGN_LEFT.value))
-        close_all.setIcon(QIcon(Icon.ALIGN_CENTER.value))
-        save_cur.setIcon(QIcon(Icon.SAVE.value))
+        close_cur.setIcon(qta.icon('msc.location', scale_factor=1.5, color='white'))
+        close_right.setIcon(qta.icon('ei.align-right', scale_factor=1.5, color='white'))
+        close_left.setIcon(qta.icon('ei.align-left', scale_factor=1.5, color='white'))
+        close_all.setIcon(qta.icon('ei.align-center', scale_factor=1.5, color='white'))
+        save_cur.setIcon(qta.icon('mdi.content-save', scale_factor=1.5, color='white'))
 
         for action in [close_cur, close_right, close_left, close_other, close_all, save_cur]:
             menu.addAction(action)

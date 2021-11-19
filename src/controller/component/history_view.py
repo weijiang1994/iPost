@@ -16,6 +16,7 @@ from src.utils.constants import VSS_DARK_THEME_PATH, Icon
 from src.utils.models import db, History
 import threading
 import datetime
+import qtawesome as qta
 
 
 class MyTreeWidgetItem(QTreeWidgetItem):
@@ -55,12 +56,12 @@ class HistoryView(QWidget, Ui_Form):
         if not self.history_treeWidget.currentItem().parent():
             delete_cur = QAction('Del All Data Of Current Item')
             delete_cur.setObjectName('del_cur_all')
-            delete_cur.setIcon(QIcon(Icon.DELETE_ICON.value))
+            delete_cur.setIcon(qta.icon('mdi.delete-forever', color='white', scale_factor=1.5))
 
         if self.history_treeWidget.currentItem().parent():
             delete_cur = QAction('Del Current Data')
             delete_cur.setObjectName('del_cur')
-            delete_cur.setIcon(QIcon(Icon.DELETE_ICON.value))
+            delete_cur.setIcon(qta.icon('mdi.delete', color='white', scale_factor=1.5))
 
         menu.addAction(delete_cur)
 

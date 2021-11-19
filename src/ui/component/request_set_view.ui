@@ -6,14 +6,38 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>333</height>
+    <width>470</width>
+    <height>321</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="10,1">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Read timeout</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="read_timeout_lineEdit">
+       <property name="minimumSize">
+        <size>
+         <width>90</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="10,0">
      <item>
@@ -25,33 +49,6 @@
      </item>
      <item>
       <widget class="QCheckBox" name="ssl_checkBox">
-       <property name="minimumSize">
-        <size>
-         <width>90</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>ON</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="10,0">
-     <item>
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Automatically follow redirects</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="redirect_checkBox">
        <property name="minimumSize">
         <size>
          <width>90</width>
@@ -92,25 +89,28 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="10,1">
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="10,0">
      <item>
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>Read timeout</string>
+        <string>Automatically follow redirects</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="read_timeout_lineEdit">
+      <widget class="QCheckBox" name="redirect_checkBox">
        <property name="minimumSize">
         <size>
          <width>90</width>
          <height>0</height>
         </size>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <property name="text">
+        <string>ON</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
