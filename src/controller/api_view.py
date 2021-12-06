@@ -241,7 +241,7 @@ class ApiView(Ui_Form, QWidget):
         if self.request_body_view.body_type == 2:
             cb_text = self.request_body_view.raw_cate_comboBox.currentText()
             if cb_text == 'JSON':
-                json_data = self.request_body_view.raw_editor.text()
+                json_data = eval(self.request_body_view.raw_editor.text())
                 header_data['Content-Type'] = 'application/json'
             elif cb_text == 'Text':
                 data = self.request_body_view.raw_editor.text()
